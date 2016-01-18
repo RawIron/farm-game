@@ -125,14 +125,14 @@ public class Building {
 
 
         int earn_amount_gold = 0;
-        int cost_amount_karma = 0;
+        int cost_amount_coins = 0;
         int param1 = 0;
         earn_amount_gold = dataUnlockable.cached.get(contents).goldCost;
-        cost_amount_karma = dataUnlockable.cached.get(contents).karmaCost;
+        cost_amount_coins = dataUnlockable.cached.get(contents).coinsCost;
         param1 = dataUnlockable.cached.get(contents).param1;
 
         if (earn_amount_gold == 0) {
-            earn_amount_gold = (int) (cost_amount_karma * dataGameSettings.cached_KarmaGoldSaleMultiplier);
+            earn_amount_gold = (int) (cost_amount_coins * dataGameSettings.cached_CoinsGoldSaleMultiplier);
         }
         earn_amount_gold = (int) (earn_amount_gold * dataGameSettings.cached_BuildingSaleRatio);
 

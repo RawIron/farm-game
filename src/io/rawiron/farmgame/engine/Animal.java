@@ -129,12 +129,12 @@ public class Animal {
 
 
         int earn_amount_gold = 0;
-        int cost_amount_karma = 0;
+        int cost_amount_coins = 0;
         earn_amount_gold = dataUnlockable.cached.get(animal).goldCost;
-        cost_amount_karma = dataUnlockable.cached.get(animal).karmaCost;
+        cost_amount_coins = dataUnlockable.cached.get(animal).coinsCost;
 
         if (earn_amount_gold == 0) {
-            earn_amount_gold = (int) (cost_amount_karma * dataGameSettings.cached_KarmaGoldSaleMultiplier);
+            earn_amount_gold = (int) (cost_amount_coins * dataGameSettings.cached_CoinsGoldSaleMultiplier);
         }
         earn_amount_gold = (int) (earn_amount_gold * dataGameSettings.cached_AnimalSaleRatio);
 
