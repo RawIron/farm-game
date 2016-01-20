@@ -8,6 +8,15 @@
     <artifactId>farm-game</artifactId>
     <version>0.1.0</version>
 
+    <name>FarmGame</name>
+    <description>Game Hack</description>
+
+    <scm>
+        <connection>scm:git://github.com/rawiron/farm-game.git</connection>
+        <developerConnection>scm:git://github.com/rawiron/farm-game.git</developerConnection>
+        <url>https://github.com/rawiron/farm-game</url>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -15,21 +24,39 @@
             <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20151123</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.38</version>
+        </dependency>
+
+        <dependency>
+            <groupId>smartfoxserver</groupId>
+            <artifactId>sfs</artifactId>
+            <version>0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/jysfs.jar</systemPath>
+        </dependency>
     </dependencies>
 
-  <build>
-    <sourceDirectory>src/io/rawiron/farmgame/</sourceDirectory>
-    <testSourceDirectory>src/io/rawiron/farmgame/test</testSourceDirectory>
-    <resources>
-      <resource>
-        <directory>src/resources</directory>
-      </resource>
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>test/resources</directory>
-      </testResource>
-    </testResources>
-  </build>
+    <build>
+        <sourceDirectory>src</sourceDirectory>
+        <testSourceDirectory>src/io/rawiron/farmgame/test</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/resources</directory>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>test/resources</directory>
+            </testResource>
+        </testResources>
+    </build>
 
 </project>
