@@ -30,6 +30,11 @@
             <version>20151123</version>
         </dependency>
         <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.38</version>
@@ -46,7 +51,7 @@
 
     <build>
         <sourceDirectory>src</sourceDirectory>
-        <testSourceDirectory>src/io/rawiron/farmgame/test</testSourceDirectory>
+        <testSourceDirectory>src</testSourceDirectory>
         <resources>
             <resource>
                 <directory>src/resources</directory>
