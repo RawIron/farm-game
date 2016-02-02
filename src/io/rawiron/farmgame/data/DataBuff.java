@@ -5,24 +5,22 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public class DataBuff {
-    private DataStore ds;
     public HashMap<String, DataItemBuff> cached = new HashMap<String, DataItemBuff>();
 
-    public DataBuff(DataStore in_ds) {
-        // read from DataStore
-        String db_sql_read_Buff =
+    public DataBuff(DataStore engine) {
+        String sql =
                 " SELECT Title, GrowthMod, DeathMod "
                         + " FROM Buffs ";
 
-        DataItemBuff buff = null;
-        ResultSet db_res_buff = ds.query(db_sql_read_Buff, "read", null);
+        ResultSet db_res_buff = engine.query(sql, "read", null);
         try {
             while (db_res_buff.next()) {
-                buff = new DataItemBuff();
+                DataItemBuff buff = new DataItemBuff();
+                buff.title = db_res_buff.getString("Title");
                 buff.growthMod = db_res_buff.getDouble("GrowthMod");
                 buff.deathMod = db_res_buff.getDouble("DeathMod");
 
-                cached.put(db_res_buff.getString("Title"), buff);
+                cached.put(buff.title, buff);
             }
         } catch (SQLException e) {
         }

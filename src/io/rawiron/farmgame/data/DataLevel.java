@@ -16,16 +16,15 @@ public class DataLevel {
         ds = in_ds;
         t = in_t;
 
-        // read from DataStore
-        DataItemLevel level = null;
         ResultSet db_res_level = this.retrieve(0);
         try {
             while (db_res_level.next()) {
-                level = new DataItemLevel();
+                DataItemLevel level = new DataItemLevel();
+                level.level = db_res_level.getInt("Level");
                 level.xpNeeded = db_res_level.getInt("XPNeeded");
                 level.reward = db_res_level.getInt("Reward");
 
-                cached.put(db_res_level.getInt("Level"), level);
+                cached.put(level.level, level);
             }
         } catch (SQLException e) {
             t.trace("SQLException: " + e.getMessage());
