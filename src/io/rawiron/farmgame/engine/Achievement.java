@@ -47,23 +47,19 @@ public class Achievement {
 
     public boolean test(String in_facebookuser, int in_farmID, String in_achievementName, char in_TotalOrStored)
     /**
-     * ABSTRACT
-     *
      * guard(
      *    exist(Unlockable) and count(Achievement)>t
      *    exist(Unlockable) and count(Storage)>t
      * )
      * {	add(Reward) }
      *
-     * IN
-     * params.farmDBGroup
-     * params.user
-     * params.farmID
-     * params.achievementName
-     * params.TotalOrStored:String
+     * @param farmDBGroup
+     * @param user
+     * @param farmID
+     * @param achievementName
+     * @param TotalOrStored:String
      *
-     * OUT
-     * result:Object.fullResult:Array
+     * @return Object.fullResult:Array
      *
      */
     {
@@ -136,31 +132,21 @@ public class Achievement {
 
     public int add(String in_facebookuser, int in_playerID, String in_item, int in_num)
     /**
-     * ABSTRACT
      * add(Avl, num)
      *
-     * IN
-     * dbgroup
-     * playerID
-     * item
-     * num
+     * @param playerID
+     * @param item
+     * @param num
      *
      * PRE
      * AchievementCounters has unique key (FarmerID,AchievementItem)
      *
-     * PERFORMANCE_IMPACT
-     *	General:medium
-     *	Frequency:stress
-     *	Cost:low
      */
     {
-        int success = 0;
-        success = ds.execute("INSERT INTO AchievementCounters ( FarmerID, AchievementItem, Count ) "
+        return ds.execute("INSERT INTO AchievementCounters ( FarmerID, AchievementItem, Count ) "
                         + " VALUES (" + in_playerID + ",'" + in_item + "', FLOOR(" + in_num + ") ) "
                         + " ON DUPLICATE KEY UPDATE Count=Count+ FLOOR(" + in_num + ")"
                 , "write", in_facebookuser);
-
-        return success;
     }
 
 

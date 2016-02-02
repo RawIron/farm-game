@@ -163,7 +163,6 @@ public class Animal {
 
     public int sub(String in_facebookuser, int in_farmID, int in_animalID, int in_amount)
     /**
-     * ABSTRACT
      * sub(Al) := add(-Al)
      *
      */
@@ -178,13 +177,7 @@ public class Animal {
 
     public int add(String in_facebookuser, int in_farmID, Integer in_animalID, Integer in_X, Integer in_Y, String in_animal, int in_amount, int in_progress)
     /**
-     * ABSTRACT
      * add(Al)
-     *
-     * PERFORMANCE_IMPACT
-     *	General:high
-     *	Frequency:stress
-     *	Cost:low
      */
     {
         if (t.verbose && (t.verbose_level >= 3))
@@ -206,7 +199,7 @@ public class Animal {
                 if (db_res_animalID.next()) new_animalID = db_res_animalID.getInt("ID");
             } catch (SQLException e) {
             }
-            ;
+
             ds.execute("UPDATE AnimalList SET Progress=" + in_progress + " WHERE FarmID=" + in_farmID + " AND Progress=-1", "write", in_facebookuser);
 
         } else if (in_amount < 0) {
@@ -236,6 +229,5 @@ public class Animal {
                 , "write", in_facebookuser);
         return 1;
     }
-
 
 }
