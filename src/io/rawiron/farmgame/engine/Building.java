@@ -85,7 +85,6 @@ public class Building {
             achievement.add(in_facebookuser, in_farmID, in_itemName, 1);
         }
 
-
         Integer repeat = dataProducer.cached.get(in_itemName).repeatable;
         String stateName = "growing";
         if (repeat == null) {
@@ -184,10 +183,8 @@ public class Building {
 
 
     public int sub(String in_facebookuser, int in_farmID, int in_X, int in_Y, int in_amount)
-    /*
-    * ABSTRACT
-    * sub(Dl) := add(-Dl)
-    *
+    /**
+        sub(Dl) := add(-Dl)
     */
     {
         if (t.verbose && (t.verbose_level >= 0) && (in_amount < 0)) {
@@ -199,15 +196,10 @@ public class Building {
 
 
     public int add(String in_facebookuser, int in_farmID, int in_X, int in_Y, int in_amount)
-/*
-* ABSTRACT
-* add(Dl)
-*
-* PERFORMANCE_IMPACT
-*	General:high
-*	Frequency:stress
-*	Cost:low
-*/ {
+    /**
+        add(Dl)
+    */
+    {
         int success = 0;
 
         if (in_amount > 0) {

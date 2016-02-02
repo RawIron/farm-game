@@ -125,11 +125,9 @@ public class Decoration {
 
 
     public int sub(String in_facebookuser, int in_farmID, int in_X, int in_Y, int in_slot, String in_item, int in_amount)
-/**
- * ABSTRACT
- * sub(Dl) := add(-Dl)
- *
- */
+    /**
+        sub(Dl) := add(-Dl)
+     */
     {
         if (t.verbose && (t.verbose_level >= 0) && (in_amount < 0))
             t.trace("assert failure in_amount=" + in_amount + " is <0");
@@ -141,13 +139,8 @@ public class Decoration {
 
     public int add(String in_facebookuser, int in_farmID, int in_X, int in_Y, int in_slot, String in_item, int in_amount)
 /**
- * ABSTRACT
  * add(Dl)
  *
- * PERFORMANCE_IMPACT
- *	General:high
- *	Frequency:stress
- *	Cost:low
  */
     {
         int success = 0;

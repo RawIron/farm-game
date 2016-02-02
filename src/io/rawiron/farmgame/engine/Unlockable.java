@@ -57,8 +57,7 @@ public class Unlockable {
     }
 
 
-    public ResultSet getPlantStats()
-    {
+    public ResultSet getPlantStats() {
         String db_sql_read_Unlockables_plantStats = " SELECT Unlockables.Name AS Name, UnlockLevel, UnlockFriends, ProductionHours/3600 AS GrowthTime "
                 + ", WitherTime/3600 AS WitherTime, Unlockables.GoldCost, GoldValue, 0 AS Specialization "
                 + ", CONCAT( 'com.embassy.', ItemClass) AS PlantClassType, CONCAT( 'com.embassy.', IconClass) AS IconClass "
@@ -396,35 +395,21 @@ public class Unlockable {
                     + " WHERE 1=1 " + coinsString + goldString + itemString + collectionString, "read", in_facebookuser);
         }
 
-
         return result;
     }
 
 
     public int add(String in_facebookuser, int in_unlockable, int in_amount)
-/**
- * ABSTRACT
- * add(Ul)
- *
- * RETURN
- * success:Boolean
- * fail: false
- * success: true
- *
- * PERFORMANCE_IMPACT
- *	General:high
- *	Frequency:stress
- *	Cost:low
- */
+    /**
+     * add(Ul)
+     *
+     * @return success:Boolean
+     */
     {
-        int success = 0;
-
-        success = ds.execute(
+        return ds.execute(
                 " INSERT INTO UnlockablePairs (Unlockable, FarmerID) VALUES (" + in_unlockable + "," + "'" + in_facebookuser + "'" + " )"
                         + " ON DUPLICATE KEY UPDATE Unlockable=" + in_unlockable
                 , "write", in_facebookuser);
-
-        return success;
     }
 
 }
