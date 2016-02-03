@@ -20,9 +20,8 @@ public class Farm {
     }
 
 
-    public ResultSet retrieve(String in_facebookuser, int in_farmID) {
-        return ds.query("SELECT * FROM Farms WHERE PlayerID=" + in_farmID
-                , "read", in_facebookuser);
+    public ResultSet retrieve(String in_facebookuser) {
+        return ds.query("SELECT * FROM Farms WHERE PlayerID=" + in_facebookuser, "read", in_facebookuser);
     }
 
 
