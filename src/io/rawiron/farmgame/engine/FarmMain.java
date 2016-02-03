@@ -1,7 +1,7 @@
 package io.rawiron.farmgame.engine;
 
-import io.rawiron.farmgame.data.DataStore;
-import io.rawiron.farmgame.data.jdbcDB;
+import io.rawiron.farmgame.gamesettings.DataStore;
+import io.rawiron.farmgame.gamesettings.jdbcDB;
 import io.rawiron.farmgame.system.Logging;
 import io.rawiron.farmgame.system.Trace;
 

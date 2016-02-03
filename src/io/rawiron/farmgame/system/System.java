@@ -3,8 +3,8 @@ package io.rawiron.farmgame.system;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import io.rawiron.farmgame.data.DataGameSettings;
-import io.rawiron.farmgame.data.DataStore;
+import io.rawiron.farmgame.gamesettings.DataGameSettings;
+import io.rawiron.farmgame.gamesettings.DataStore;
 
 
 public class System {

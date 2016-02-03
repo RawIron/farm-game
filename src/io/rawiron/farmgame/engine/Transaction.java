@@ -1,6 +1,6 @@
 package io.rawiron.farmgame.engine;
 
-import io.rawiron.farmgame.data.DataUnlockable;
+import io.rawiron.farmgame.gamesettings.DataUnlockable;
 import io.rawiron.farmgame.system.Trace;
 
 

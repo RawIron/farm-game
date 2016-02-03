@@ -3,8 +3,8 @@ package io.rawiron.farmgame.engine;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import io.rawiron.farmgame.data.DataLevel;
-import io.rawiron.farmgame.data.DataStore;
+import io.rawiron.farmgame.gamesettings.DataLevel;
+import io.rawiron.farmgame.gamesettings.DataStore;
 import io.rawiron.farmgame.system.Logging;
 import io.rawiron.farmgame.system.Trace;
 

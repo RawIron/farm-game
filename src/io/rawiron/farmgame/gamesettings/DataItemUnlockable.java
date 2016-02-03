@@ -1,4 +1,4 @@
-package io.rawiron.farmgame.data;
+package io.rawiron.farmgame.gamesettings;
 
 
 public class DataItemUnlockable {

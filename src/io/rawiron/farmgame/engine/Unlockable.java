@@ -3,9 +3,9 @@ package io.rawiron.farmgame.engine;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import io.rawiron.farmgame.data.DataGameSettings;
-import io.rawiron.farmgame.data.DataStore;
-import io.rawiron.farmgame.data.DataUnlockable;
+import io.rawiron.farmgame.gamesettings.DataGameSettings;
+import io.rawiron.farmgame.gamesettings.DataStore;
+import io.rawiron.farmgame.gamesettings.DataUnlockable;
 import io.rawiron.farmgame.system.Logging;
 import io.rawiron.farmgame.system.Trace;
 
@@ -79,7 +79,7 @@ public class Unlockable {
  * OUT
  */
     {
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("enter function =BuyUnlockable=");
+        if (Trace.verbose && (Trace.verbose_level >= 4)) t.trace("enter function =BuyUnlockable=");
         boolean success = false;
 
         int playerID = 0;
@@ -113,7 +113,7 @@ public class Unlockable {
             }
         }
 
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("exit function =BuyUnlockable=");
+        if (Trace.verbose && (Trace.verbose_level >= 4)) t.trace("exit function =BuyUnlockable=");
         return success;
     }
 
@@ -174,7 +174,7 @@ public class Unlockable {
  * unlockable.XPEarned
  */
     {
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("enter function =payForUnlock=");
+        if (Trace.verbose && (Trace.verbose_level >= 4)) t.trace("enter function =payForUnlock=");
         boolean result = false;
 
 
@@ -254,7 +254,7 @@ public class Unlockable {
             }
         }
 
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("exit function =payForUnlock= with result=" + result);
+        if (Trace.verbose && (Trace.verbose_level >= 4)) t.trace("exit function =payForUnlock= with result=" + result);
 
         return result;
     }
