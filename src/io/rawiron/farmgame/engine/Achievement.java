@@ -22,10 +22,10 @@ public class Achievement {
     private DataUnlockable dataUnlockable;
 
 
-    public Achievement(DataStore in_ds, Logging in_l, Trace in_t) {
-        ds = in_ds;
-        l = in_l;
-        t = in_t;
+    public Achievement(DataStore dataStore, Logging logger, Trace tracer) {
+        ds = dataStore;
+        l = logger;
+        t = tracer;
     }
 
     public void setReward(Reward in_rw) {
@@ -140,7 +140,6 @@ public class Achievement {
      *
      * PRE
      * AchievementCounters has unique key (FarmerID,AchievementItem)
-     *
      */
     {
         return ds.execute("INSERT INTO AchievementCounters ( FarmerID, AchievementItem, Count ) "
@@ -152,15 +151,16 @@ public class Achievement {
 
     public ResultSet retrieve(String in_facebookuser) {
         String sql =
-                " SELECT Achievements.*, Unlockables.ID, UnlockablePairs.FarmerID=" + "'" + in_facebookuser + "'" + " AS Earned "
-                        + " FROM Achievements LEFT JOIN Unlockables ON (UnlockAwardName=Name) "
-                        + " LEFT JOIN UnlockablePairs ON (Unlockable=Unlockables.ID AND UnlockablePairs.FarmerID=" + "'" + in_facebookuser + "'" + ")";
-
+                String.format(" SELECT Achievements.*, Unlockables.ID, UnlockablePairs.FarmerID AS Earned  " +
+                        "FROM Achievements " +
+                        "LEFT JOIN Unlockables ON (UnlockAwardName=Name)  " +
+                        "LEFT JOIN UnlockablePairs ON (Unlockable=Unlockables.ID AND UnlockablePairs.FarmerID='%s')",
+                        in_facebookuser);
         return ds.query(sql, "read", in_facebookuser);
     }
 
     public ResultSet retrieveList(String in_facebookuser, int in_farmID) {
-        String sql = " SELECT AchievementItem, Count FROM AchievementCounters WHERE FarmerID=" + in_farmID;
+        String sql = String.format("SELECT AchievementItem, Count FROM AchievementCounters WHERE FarmerID=%d", in_farmID);
         return ds.query(sql, "read", in_facebookuser);
     }
 

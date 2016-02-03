@@ -19,6 +19,7 @@ public class Gift {
     private Decoration decoration;
     private Buff buff;
     private Animal animal;
+    private AnimalInventory animalInventory;
     private PlotList plotList;
     private Valuable valuable;
 
@@ -35,6 +36,8 @@ public class Gift {
     public void setAnimal(Animal in_a) {
         animal = in_a;
     }
+
+    public void setAnmialInventory(AnimalInventory al) { animalInventory = al; }
 
     public void setBuff(Buff in_b) {
         buff = in_b;
@@ -108,7 +111,9 @@ public class Gift {
                                 + " VALUES ( " + in_farmID + ", " + in_X + ", " + in_Y + ", 'PlantTreeTask', '" + giftItemName + "', Now(), Now() )"
                         , "write", in_facebookuser);
             } else if (unlockButtonType.equals("AnimalBuyButton")) {
-                result = animal.add(in_facebookuser, in_farmID, null, in_X, in_Y, giftItemName, 1, 0);
+                AnimalItem animal = new AnimalItem(in_facebookuser, null, giftItemName, 0, in_X, in_Y);
+                animalInventory.add(in_facebookuser, animal, 1);
+                result = 1;
             } else if (unlockButtonType.equals("BuildingBuyButton")) {
                 Integer repeat = (Integer) dataProducer.cached.get(giftItemName).repeatable;
                 String state = "growing";
