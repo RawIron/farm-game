@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import io.rawiron.farmgame.gamesettings.DataAchievement;
-import io.rawiron.farmgame.gamesettings.DataStore;
+import io.rawiron.farmgame.system.DataStore;
 import io.rawiron.farmgame.gamesettings.DataUnlockable;
 import io.rawiron.farmgame.system.Logging;
 import io.rawiron.farmgame.system.Trace;

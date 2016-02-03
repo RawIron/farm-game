@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import io.rawiron.farmgame.gamesettings.DataGameSettings;
 import io.rawiron.farmgame.gamesettings.DataProducer;
-import io.rawiron.farmgame.gamesettings.DataStore;
+import io.rawiron.farmgame.system.DataStore;
 import io.rawiron.farmgame.system.Logging;
 import io.rawiron.farmgame.system.Trace;
 

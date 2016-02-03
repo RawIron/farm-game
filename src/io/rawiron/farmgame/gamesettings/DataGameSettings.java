@@ -1,5 +1,7 @@
 package io.rawiron.farmgame.gamesettings;
 
+import io.rawiron.farmgame.system.DataStore;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

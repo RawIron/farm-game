@@ -1,7 +1,7 @@
 package io.rawiron.farmgame.engine;
 
 import io.rawiron.farmgame.gamesettings.DataGameSettings;
-import io.rawiron.farmgame.gamesettings.DataStore;
+import io.rawiron.farmgame.system.DataStore;
 
 
 public class JerryCan {
