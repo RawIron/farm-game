@@ -109,42 +109,23 @@ public class Storage {
 
 
     public int add(String in_facebookuser, int in_farmID, String item, int num)
-/**
- * ABSTRACT
- * add(Pl)
- * sub(Pl) := add(-Pl)
- *
- * PERFORMANCE_IMPACT
- *	General:high
- *	Frequency:stress
- *	Cost:low
- */
     {
-        int success = 0;
-
-        success = ds.execute(
+        return ds.execute(
                 " INSERT INTO Storage ( FarmID, Contents, Quantity, DateStored ) "
                         + " VALUES (" + in_farmID + ", " + "'" + item + "'" + ", FLOOR(" + num + "), Now() ) "
                         + " ON DUPLICATE KEY UPDATE Quantity=Quantity+ FLOOR(" + num + ")" + ",DateStored=Now() "
                 , "write", in_facebookuser);
-
-        return success;
     }
 
 
     public ResultSet retrieve(String in_facebookuser, int in_farmID)
-/**
- * IN
- * params.userDBGroup
- * params.farmID
- */
+    /**
+     * @param playerId
+     */
     {
-        ResultSet queryRes;
+        String sql = " SELECT * FROM Storage WHERE FarmID=" + in_farmID + " AND Quantity>0 ";
 
-        String db_sql_read_Storage = " SELECT * FROM Storage WHERE FarmID=" + in_farmID + " AND Quantity>0 ";
-        queryRes = ds.query(db_sql_read_Storage, "read", in_facebookuser);
-
-        return queryRes;
+        return ds.query(sql, "read", in_facebookuser);
     }
 
 }

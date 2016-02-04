@@ -84,27 +84,7 @@ public class Game {
     }
 
 
-    public int login(String in_facebookuser, String in_userName, String in_skey, BalanceSheet inout_gold, BalanceSheet inout_coins)
-/**
- * ABSTRACT
- *
- *
- * IN
- * params.userDBGroup:int
- * params.user:String
- * params.userName:String
- * params.skey:String
- *
- * OUT
- *
- *
- * PERFORMANCE_IMPACT
- *	General:Low
- *	Frequency:few
- *	Cost:high
- *
- */
-    {
+    public int login(String in_facebookuser, String in_userName, String in_skey, BalanceSheet inout_gold, BalanceSheet inout_coins) {
         if (t.verbose && (t.verbose_level >= 4)) t.trace("enter function =game.login=" + in_facebookuser);
 
         String db_sql_read_FarmerIndex =
@@ -138,191 +118,53 @@ public class Game {
 
         int rc = -1;
 
-        String db_sql_read_UnlockablePairs_Gold = " SELECT SUM(numCollected) AS Total "
-                + " FROM ( SELECT Collection, if (Count(*) =10, Effect, 0) AS NumCollected "
-                + " FROM UnlockablePairs INNER JOIN Unlockables ON Unlockable=ID INNER JOIN Collections ON Collections.Name=Collection "
-                + " WHERE FarmerID=" + "'" + in_facebookuser + "'" + " AND Collection IS NOT NULL GROUP BY Collection ) AS a";
-
-        String db_sql_read = "SELECT SUM(DailyGoldReward) AS TotalGoldReward, SUM(DailyCoinsReward) AS TotalCoinsReward, Type FROM ("
-                + " SELECT if(DailyGoldReward>0, DailyGoldReward, 0) AS DailyGoldReward, if(DailyCoinsReward>0, DailyCoinsReward, 0) AS DailyCoinsReward, Type "
-                + " FROM PlotList INNER JOIN Unlockables ON Name = Contents "
-                + " WHERE FarmID=" + ID
-                + " UNION ALL SELECT if(DailyGoldReward>0, DailyGoldReward, 0) AS DailyGoldReward, if(DailyCoinsReward>0, DailyCoinsReward, 0) AS DailyCoinsReward, Type "
-                + " FROM AnimalList INNER JOIN Unlockables ON Name = Animal "
-                + " WHERE FarmID = " + ID
-                + " UNION ALL SELECT if(DailyGoldReward>0, DailyGoldReward, 0) AS DailyGoldReward, if(DailyCoinsReward>0, DailyCoinsReward, 0) AS DailyCoinsReward, Type "
-                + " FROM UnlockablePairs INNER JOIN Unlockables ON Unlockable = ID "
-                + " WHERE FarmerID =" + "'" + in_facebookuser + "'"
-                + " UNION ALL SELECT if(DailyGoldReward>0, DailyGoldReward, 0) AS DailyGoldReward, if(DailyCoinsReward>0, DailyCoinsReward, 0) AS DailyCoinsReward, Type "
-                + " FROM DecorationList INNER JOIN Unlockables ON Name = Decoration "
-                + " WHERE FarmID = " + ID
-                + " ) AS A GROUP BY Type ";
-
-
         if (userExists) {
             // EXISTING USER
 
             if (sameDay != 1) {
-                //
-                // GOLD
+                this.dailyReward(in_facebookuser, inout_gold, inout_coins);
 
-                // calculate daily gold reward
-                inout_gold.daily = dataGameSettings.cached_BasicDailyReward;
+                // update Player status
+                String db_sql_write_FarmerIndex_login = "UPDATE FarmerIndex " +
+                        "SET LastPlayDate=Now()," + "LastDailyReward = Now()," +
+                        "PlayerName=" + "'" + in_userName + "'"
+                        + " WHERE FacebookUser=" + "'" + in_facebookuser + "'";
 
-                // count collection gold
-                ResultSet queryResult = ds.query(db_sql_read_UnlockablePairs_Gold, "read", in_facebookuser);
-                try {
-                    if (queryResult.next()) {
-                        inout_gold.collection = queryResult.getInt("Total");
-                    }
-                } catch (SQLException e) {
-                }
+                String db_sql_write_Farmers = "UPDATE Farmers "
+                        + " SET Fuel = if ("
+                        + " Fuel < " + dataGameSettings.cached_FuelLimit
+                        + " && (@f:= Fuel + floor(timestampdiff( second, LastFuelSave, Now() ) / " + dataGameSettings.cached_FuelRefillSecondsPerUnit + ") ) "
+                        + " < " + dataGameSettings.cached_FuelLimit
+                        + ", @f, " + dataGameSettings.cached_FuelLimit
+                        + ")"
+                        + ", PlayerName=" + "'" + in_userName + "'"
+                        + ", Gold=Gold+" + inout_gold.earned + ", Coins=Coins+" + inout_coins.earned + " "
+                        + " , WeeklyCoinsPoints=WeeklyCoinsPoints+" + inout_coins.earned + ", AllTimeCoinsPoints=AllTimeCoinsPoints+" + inout_coins.earned + ", LastFuelSave=Now() "
+                        + " WHERE FacebookUser=" + "'" + in_facebookuser + "'";
 
+                ds.execute(db_sql_write_FarmerIndex_login, "write", in_facebookuser);
+                ds.execute(db_sql_write_Farmers, "write", in_facebookuser);
 
-                //calculate daily gold awarded to players for having N number of friends
-                int FriendCount = 0;
-                FriendCount = friend.count(in_facebookuser);
-
-                if (FriendCount > dataGameSettings.cached_PerFriendDailyRewardLimit)
-                    FriendCount = dataGameSettings.cached_PerFriendDailyRewardLimit;
-                inout_gold.friend = dataGameSettings.cached_PerFriendDailyReward * FriendCount;
-
-
-                // count other gold
-                String type = null;
-                queryResult = ds.query(db_sql_read, "read", in_facebookuser);
-                try {
-                    while (queryResult.next()) {
-                        type = queryResult.getString("Type");
-                        if (type.equals("Building")) {
-                            inout_gold.building = queryResult.getInt("TotalGoldReward");
-                            inout_coins.building = queryResult.getInt("TotalCoinsReward");
-                        } else if (type.equals("Contraption")) {
-                            inout_gold.contraption = queryResult.getInt("TotalGoldReward");
-                            inout_coins.contraption = queryResult.getInt("TotalCoinsReward");
-                        } else if (type.equals("Protection")) {
-                            inout_gold.protection = queryResult.getInt("TotalGoldReward");
-                            inout_coins.protection = queryResult.getInt("TotalCoinsReward");
-                        } else if (type.equals("Animal")) {
-                            inout_gold.animal = queryResult.getInt("TotalGoldReward");
-                            inout_coins.animal = queryResult.getInt("TotalCoinsReward");
-                        } else if (type.equals("Decoration")) {
-                            inout_gold.decoration = queryResult.getInt("TotalGoldReward");
-                            inout_coins.decoration = queryResult.getInt("TotalCoinsReward");
-                        } else if (type.equals("Avatar")) {
-                            inout_gold.clothing = queryResult.getInt("TotalGoldReward");
-                            inout_coins.clothing = queryResult.getInt("TotalCoinsReward");
-                        } else if (type.equals("Land")) {
-                            inout_gold.land = queryResult.getInt("TotalGoldReward");
-                            inout_coins.land = queryResult.getInt("TotalCoinsReward");
-                        }
-                        if (t.verbose) t.trace(type);
-                    }
-                } catch (SQLException e) {
-                }
-                inout_gold.earned = inout_gold.daily + inout_gold.collection + inout_gold.friend + inout_gold.building
-                        + inout_gold.contraption + inout_gold.protection
-                        + inout_gold.animal + inout_gold.decoration + inout_gold.clothing + inout_gold.land;
-
-                inout_coins.earned = inout_coins.daily + inout_coins.collection + inout_coins.building
-                        + inout_coins.contraption + inout_coins.protection
-                        + inout_coins.animal + inout_coins.decoration + inout_coins.clothing + inout_coins.land;
-
-
+                rc = 1;
             }
-            if (t.verbose && (t.verbose_level >= 3))
-                t.trace("day:" + inout_gold.daily + " coll:" + inout_gold.collection + " friend:" + inout_gold.friend
-                        + " build:" + inout_gold.building
-                        + " contraption:" + inout_gold.contraption + " protection:" + inout_gold.protection
-                        + " animal:" + inout_gold.animal + " decor:" + inout_gold.decoration + " land:" + inout_gold.land);
-            if (t.verbose && (t.verbose_level >= 3))
-                t.trace("day:" + inout_coins.daily + " coll:" + inout_coins.collection
-                        + " build:" + inout_coins.building
-                        + " contraption:" + inout_coins.contraption + " protection:" + inout_coins.protection
-                        + " animal:" + inout_coins.animal + " decor:" + inout_coins.decoration + " land:" + inout_coins.land);
-            // POST
-            // goldEarned, coinsEarned
 
-
-            // update Player status
-            //
-            String db_sql_write_FarmerIndex_login = "UPDATE FarmerIndex SET LastPlayDate=Now()," + "LastDailyReward = Now()," + "PlayerName=" + "'" + in_userName + "'"
-                    + " WHERE FacebookUser=" + "'" + in_facebookuser + "'";
-
-            String db_sql_write_Farmers = "UPDATE Farmers "
-                    + " SET Fuel = if ("
-                    + " Fuel < " + dataGameSettings.cached_FuelLimit
-                    + " && (@f:= Fuel + floor(timestampdiff( second, LastFuelSave, Now() ) / " + dataGameSettings.cached_FuelRefillSecondsPerUnit + ") ) "
-                    + " < " + dataGameSettings.cached_FuelLimit
-                    + ", @f, " + dataGameSettings.cached_FuelLimit
-                    + ")"
-                    + ", PlayerName=" + "'" + in_userName + "'"
-                    + ", Gold=Gold+" + inout_gold.earned + ", Coins=Coins+" + inout_coins.earned + " "
-                    + " , WeeklyCoinsPoints=WeeklyCoinsPoints+" + inout_coins.earned + ", AllTimeCoinsPoints=AllTimeCoinsPoints+" + inout_coins.earned + ", LastFuelSave=Now() "
-                    + " WHERE FacebookUser=" + "'" + in_facebookuser + "'";
-
-            ds.execute(db_sql_write_FarmerIndex_login, "write", in_facebookuser);
-            ds.execute(db_sql_write_Farmers, "write", in_facebookuser);
-
-            rc = 1;
         } else {
             // NEW USER
-            // create entries .. built starter farm
-
             if (in_skey == null || in_skey.equals("null")) {
                 in_skey = "";
             }
 
-            farmer.createIndex(in_facebookuser, in_userName, in_skey);
-            int farmID = 0;
-            farmID = farmer.getPlayerID(in_facebookuser);
-
-            farmer.create(in_facebookuser, in_userName, farmID);
-
-            farm.create(in_facebookuser, farmID);
-
-            if (!dataGameSettings.cached_StartingGift.equals("")) {
-                gift.add(dataGameSettings.cached_StartingGift, "starterfarm", in_facebookuser);
-            }
-
-            plotList.create(in_facebookuser, farmID);
+            this.init(in_facebookuser, in_userName, in_skey);
 
             rc = 0;
         }
 
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("exit function =game.login=" + rc);
-        return rc;
-    }
+            if (t.verbose && (t.verbose_level >= 4)) t.trace("exit function =game.login=" + rc);
+            return rc;
+        }
 
 
-    public int test(String in_facebookuser, int in_farmID, int in_X, int in_Y, String in_costItem, int in_useCoins, String in_plantState)
-/**
- * ABSTRACT
- *
- *
- * IN
- * params.userDBGroup:int
- * params.user:String
- * params.userName:String
- * params.taskClassName:String
- * params.useCoins:Boolean
- * params.farmID:int
- * params.X:int
- * params.Y:int
- * params.itemName:String
- * params.animalID:int
- * params.plantState:String
- * params.vitality:int
- * params.mystery:Boolean
- * params.friend:String
- *
- * PERFORMANCE_IMPACT
- *	General:high
- *	Frequency:stress
- *	Cost:high
- *
- */
-    {
+    public int test(String in_facebookuser, int in_farmID, int in_X, int in_Y, String in_costItem, int in_useCoins, String in_plantState) {
         int result = -1;
 
         char currency = 'G';
@@ -349,8 +191,7 @@ public class Game {
             transaction.leave(in_facebookuser, in_costItem, currency, XP_earned);
 
             result = 1;
-        }
-        else {
+        } else {
             if (Trace.verbose && (Trace.verbose_level >= 0)) t.trace("assert failure - Not enough of something");
             result = 2;
         }
@@ -358,6 +199,127 @@ public class Game {
         return result;
     }
 
+    public void dailyReward(final String in_facebookuser, BalanceSheet inout_gold, BalanceSheet inout_coins) {
+        String db_sql_read_UnlockablePairs_Gold = " SELECT SUM(numCollected) AS Total "
+                + " FROM ( SELECT Collection, if (Count(*) =10, Effect, 0) AS NumCollected "
+                + " FROM UnlockablePairs INNER JOIN Unlockables ON Unlockable=ID INNER JOIN Collections ON Collections.Name=Collection "
+                + " WHERE FarmerID=" + "'" + in_facebookuser + "'" + " AND Collection IS NOT NULL GROUP BY Collection ) AS a";
+
+        String db_sql_read = "SELECT SUM(DailyGoldReward) AS TotalGoldReward, SUM(DailyCoinsReward) AS TotalCoinsReward, Type FROM ("
+                + " SELECT if(DailyGoldReward>0, DailyGoldReward, 0) AS DailyGoldReward, if(DailyCoinsReward>0, DailyCoinsReward, 0) AS DailyCoinsReward, Type "
+                + " FROM PlotList INNER JOIN Unlockables ON Name = Contents "
+                + " WHERE FarmID=" + in_facebookuser
+                + " UNION ALL SELECT if(DailyGoldReward>0, DailyGoldReward, 0) AS DailyGoldReward, if(DailyCoinsReward>0, DailyCoinsReward, 0) AS DailyCoinsReward, Type "
+                + " FROM AnimalList INNER JOIN Unlockables ON Name = Animal "
+                + " WHERE FarmID = " + in_facebookuser
+                + " UNION ALL SELECT if(DailyGoldReward>0, DailyGoldReward, 0) AS DailyGoldReward, if(DailyCoinsReward>0, DailyCoinsReward, 0) AS DailyCoinsReward, Type "
+                + " FROM UnlockablePairs INNER JOIN Unlockables ON Unlockable = ID "
+                + " WHERE FarmerID =" + "'" + in_facebookuser + "'"
+                + " UNION ALL SELECT if(DailyGoldReward>0, DailyGoldReward, 0) AS DailyGoldReward, if(DailyCoinsReward>0, DailyCoinsReward, 0) AS DailyCoinsReward, Type "
+                + " FROM DecorationList INNER JOIN Unlockables ON Name = Decoration "
+                + " WHERE FarmID = " + in_facebookuser
+                + " ) AS A GROUP BY Type ";
+        //
+        // GOLD
+
+        // calculate daily gold reward
+        inout_gold.daily = dataGameSettings.cached_BasicDailyReward;
+
+        // count collection gold
+        ResultSet queryResult = ds.query(db_sql_read_UnlockablePairs_Gold, "read", in_facebookuser);
+        try {
+            if (queryResult.next()) {
+                inout_gold.collection = queryResult.getInt("Total");
+            }
+        } catch (SQLException e) {
+        }
+
+
+        //calculate daily gold awarded to players for having N number of friends
+        int FriendCount = 0;
+        FriendCount = friend.count(in_facebookuser);
+
+        if (FriendCount > dataGameSettings.cached_PerFriendDailyRewardLimit)
+            FriendCount = dataGameSettings.cached_PerFriendDailyRewardLimit;
+        inout_gold.friend = dataGameSettings.cached_PerFriendDailyReward * FriendCount;
+
+
+        // count other gold
+        String type = null;
+        queryResult = ds.query(db_sql_read, "read", in_facebookuser);
+        try {
+            while (queryResult.next()) {
+                type = queryResult.getString("Type");
+                if (type.equals("Building")) {
+                    inout_gold.building = queryResult.getInt("TotalGoldReward");
+                    inout_coins.building = queryResult.getInt("TotalCoinsReward");
+                } else if (type.equals("Contraption")) {
+                    inout_gold.contraption = queryResult.getInt("TotalGoldReward");
+                    inout_coins.contraption = queryResult.getInt("TotalCoinsReward");
+                } else if (type.equals("Protection")) {
+                    inout_gold.protection = queryResult.getInt("TotalGoldReward");
+                    inout_coins.protection = queryResult.getInt("TotalCoinsReward");
+                } else if (type.equals("Animal")) {
+                    inout_gold.animal = queryResult.getInt("TotalGoldReward");
+                    inout_coins.animal = queryResult.getInt("TotalCoinsReward");
+                } else if (type.equals("Decoration")) {
+                    inout_gold.decoration = queryResult.getInt("TotalGoldReward");
+                    inout_coins.decoration = queryResult.getInt("TotalCoinsReward");
+                } else if (type.equals("Avatar")) {
+                    inout_gold.clothing = queryResult.getInt("TotalGoldReward");
+                    inout_coins.clothing = queryResult.getInt("TotalCoinsReward");
+                } else if (type.equals("Land")) {
+                    inout_gold.land = queryResult.getInt("TotalGoldReward");
+                    inout_coins.land = queryResult.getInt("TotalCoinsReward");
+                }
+                if (t.verbose) t.trace(type);
+            }
+        } catch (SQLException e) {
+        }
+        inout_gold.earned = inout_gold.daily + inout_gold.collection + inout_gold.friend + inout_gold.building
+                + inout_gold.contraption + inout_gold.protection
+                + inout_gold.animal + inout_gold.decoration + inout_gold.clothing + inout_gold.land;
+
+        inout_coins.earned = inout_coins.daily + inout_coins.collection + inout_coins.building
+                + inout_coins.contraption + inout_coins.protection
+                + inout_coins.animal + inout_coins.decoration + inout_coins.clothing + inout_coins.land;
+
+
+    if (Trace.verbose &&(Trace.verbose_level >=3)) {
+        t.trace("day:" + inout_gold.daily +
+                " coll:" + inout_gold.collection +
+                " friend:" + inout_gold.friend
+                + " build:" + inout_gold.building
+                + " contraption:" + inout_gold.contraption + " protection:" + inout_gold.protection
+                + " animal:" + inout_gold.animal + " decor:" + inout_gold.decoration + " land:" + inout_gold.land);
+    }
+    if(Trace.verbose &&(Trace.verbose_level >=3)) {
+        t.trace("day:" + inout_coins.daily
+                + " coll:" + inout_coins.collection
+                + " build:" + inout_coins.building
+                + " contraption:" + inout_coins.contraption + " protection:" + inout_coins.protection
+                + " animal:" + inout_coins.animal + " decor:" + inout_coins.decoration + " land:" + inout_coins.land);
+    }
+    // POST
+    // goldEarned, coinsEarned
+
+    }
+
+    public void init(final String in_facebookuser, final String in_userName, final String in_skey) {
+        farmer.createIndex(in_facebookuser, in_userName, in_skey);
+        int farmID = 0;
+        farmID = farmer.getPlayerID(in_facebookuser);
+
+        farmer.create(in_facebookuser, in_userName, farmID);
+
+        farm.create(in_facebookuser, farmID);
+
+        if (!dataGameSettings.cached_StartingGift.equals("")) {
+            gift.add(dataGameSettings.cached_StartingGift, "starterfarm", in_facebookuser);
+        }
+
+        plotList.create(in_facebookuser, farmID);
+    }
 
     private void handleTaskLog(String in_facebookuser, int in_farmID, String in_task, String in_itemName, int in_cost, char in_currency, int in_useYourCoins) {
         ds.execute("INSERT INTO log VALUES ( Now(), '" + in_task + "','" + in_facebookuser + "','" + in_farmID + "','" + in_itemName + "'," + in_cost + ", '" + in_currency + "',null,1 )"

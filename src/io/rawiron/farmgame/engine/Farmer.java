@@ -26,6 +26,7 @@ public class Farmer {
 
     private static int techType = 0;
     private static final int techTypeMax = 3;
+    private AnimalInventory animalInventory;
 
 
     public Farmer(Valuable in_v, DataStore in_ds, Logging in_l, Trace in_t) {
@@ -41,6 +42,10 @@ public class Farmer {
 
     public void setAnimal(Animal in_a) {
         animal = in_a;
+    }
+
+    public void setAnimalInventory(AnimalInventory al) {
+        animalInventory = al;
     }
 
     public void setDecoration(Decoration in_d) {
@@ -221,8 +226,6 @@ public class Farmer {
         }
 
 
-        //
-        //
         String db_sql_read_Farmers_goldValue = " SELECT Coins * CoinsGoldExchange1 AS Gold "
                 + " FROM Farmers INNER JOIN GameSettings WHERE FacebookUser=" + "'" + in_facebookuser + "'";
 
@@ -234,12 +237,11 @@ public class Farmer {
             }
 
             gold += building.goldValue(in_facebookuser, farmID);
-            gold += animal.i.goldValue(in_facebookuser, animal);
+            gold += animalInventory.goldValue(in_facebookuser);
             gold += decoration.goldValue(in_facebookuser, farmID);
         }
 
 
-        //
         if (gold < 10) {
             valuables.add(in_facebookuser, farmID, 0, 200, 0, 0, 0);
         }
