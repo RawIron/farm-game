@@ -10,7 +10,7 @@ import io.rawiron.farmgame.gamesettings.DataUnlockable;
 import io.rawiron.farmgame.system.Logging;
 import io.rawiron.farmgame.system.System;
 import io.rawiron.farmgame.system.Trace;
-
+import io.rawiron.farmgame.session.Session;
 
 public class Game {
 
@@ -27,6 +27,7 @@ public class Game {
 
     private Transaction transaction;
     private System system;
+    public Session session;
 
     private DataUnlockable dataUnlockable;
     private DataProducer dataProducer;
@@ -84,86 +85,6 @@ public class Game {
     }
 
 
-    public int login(String in_facebookuser, String in_userName, String in_skey, BalanceSheet inout_gold, BalanceSheet inout_coins) {
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("enter function =game.login=" + in_facebookuser);
-
-        String db_sql_read_FarmerIndex =
-                " SELECT PlayerID, skey, (DAY(LastDailyReward) = DAY(Now())) AS SameDay "
-                        + " FROM FarmerIndex WHERE FacebookUser=" + "'" + in_facebookuser + "'";
-
-        boolean gotSkey = false;
-        String db_skey = null;
-
-        boolean userExists = false;
-        int ID = -1;
-        byte sameDay = 0;
-
-        ResultSet db_res_index = ds.query(db_sql_read_FarmerIndex, "read", in_facebookuser);
-        try {
-            if (db_res_index.next()) {
-                db_skey = db_res_index.getString("skey");
-                gotSkey = true;
-
-                ID = db_res_index.getInt("PlayerID");
-                sameDay = db_res_index.getByte("SameDay");
-                userExists = true;
-            }
-        } catch (SQLException e) {
-        }
-
-        if (gotSkey && (db_skey != null && !db_skey.equals("") && !db_skey.equals(in_skey))) {
-            return 2;
-        }
-
-
-        int rc = -1;
-
-        if (userExists) {
-            // EXISTING USER
-
-            if (sameDay != 1) {
-                this.dailyReward(in_facebookuser, inout_gold, inout_coins);
-
-                // update Player status
-                String db_sql_write_FarmerIndex_login = "UPDATE FarmerIndex " +
-                        "SET LastPlayDate=Now()," + "LastDailyReward = Now()," +
-                        "PlayerName=" + "'" + in_userName + "'"
-                        + " WHERE FacebookUser=" + "'" + in_facebookuser + "'";
-
-                String db_sql_write_Farmers = "UPDATE Farmers "
-                        + " SET Fuel = if ("
-                        + " Fuel < " + dataGameSettings.cached_FuelLimit
-                        + " && (@f:= Fuel + floor(timestampdiff( second, LastFuelSave, Now() ) / " + dataGameSettings.cached_FuelRefillSecondsPerUnit + ") ) "
-                        + " < " + dataGameSettings.cached_FuelLimit
-                        + ", @f, " + dataGameSettings.cached_FuelLimit
-                        + ")"
-                        + ", PlayerName=" + "'" + in_userName + "'"
-                        + ", Gold=Gold+" + inout_gold.earned + ", Coins=Coins+" + inout_coins.earned + " "
-                        + " , WeeklyCoinsPoints=WeeklyCoinsPoints+" + inout_coins.earned + ", AllTimeCoinsPoints=AllTimeCoinsPoints+" + inout_coins.earned + ", LastFuelSave=Now() "
-                        + " WHERE FacebookUser=" + "'" + in_facebookuser + "'";
-
-                ds.execute(db_sql_write_FarmerIndex_login, "write", in_facebookuser);
-                ds.execute(db_sql_write_Farmers, "write", in_facebookuser);
-
-                rc = 1;
-            }
-
-        } else {
-            // NEW USER
-            if (in_skey == null || in_skey.equals("null")) {
-                in_skey = "";
-            }
-
-            this.init(in_facebookuser, in_userName, in_skey);
-
-            rc = 0;
-        }
-
-            if (t.verbose && (t.verbose_level >= 4)) t.trace("exit function =game.login=" + rc);
-            return rc;
-        }
-
-
     public int test(String in_facebookuser, int in_farmID, int in_X, int in_Y, String in_costItem, int in_useCoins, String in_plantState) {
         int result = -1;
 
@@ -199,7 +120,7 @@ public class Game {
         return result;
     }
 
-    public void dailyReward(final String in_facebookuser, BalanceSheet inout_gold, BalanceSheet inout_coins) {
+    public void dailyReward(final String in_facebookuser, final String in_userName, BalanceSheet inout_gold, BalanceSheet inout_coins) {
         String db_sql_read_UnlockablePairs_Gold = " SELECT SUM(numCollected) AS Total "
                 + " FROM ( SELECT Collection, if (Count(*) =10, Effect, 0) AS NumCollected "
                 + " FROM UnlockablePairs INNER JOIN Unlockables ON Unlockable=ID INNER JOIN Collections ON Collections.Name=Collection "
@@ -285,24 +206,44 @@ public class Game {
                 + inout_coins.animal + inout_coins.decoration + inout_coins.clothing + inout_coins.land;
 
 
-    if (Trace.verbose &&(Trace.verbose_level >=3)) {
-        t.trace("day:" + inout_gold.daily +
-                " coll:" + inout_gold.collection +
-                " friend:" + inout_gold.friend
-                + " build:" + inout_gold.building
-                + " contraption:" + inout_gold.contraption + " protection:" + inout_gold.protection
-                + " animal:" + inout_gold.animal + " decor:" + inout_gold.decoration + " land:" + inout_gold.land);
-    }
-    if(Trace.verbose &&(Trace.verbose_level >=3)) {
-        t.trace("day:" + inout_coins.daily
-                + " coll:" + inout_coins.collection
-                + " build:" + inout_coins.building
-                + " contraption:" + inout_coins.contraption + " protection:" + inout_coins.protection
-                + " animal:" + inout_coins.animal + " decor:" + inout_coins.decoration + " land:" + inout_coins.land);
-    }
-    // POST
-    // goldEarned, coinsEarned
+        if (Trace.verbose &&(Trace.verbose_level >=3)) {
+            t.trace("day:" + inout_gold.daily +
+                    " coll:" + inout_gold.collection +
+                    " friend:" + inout_gold.friend
+                    + " build:" + inout_gold.building
+                    + " contraption:" + inout_gold.contraption + " protection:" + inout_gold.protection
+                    + " animal:" + inout_gold.animal + " decor:" + inout_gold.decoration + " land:" + inout_gold.land);
+        }
+        if(Trace.verbose &&(Trace.verbose_level >=3)) {
+            t.trace("day:" + inout_coins.daily
+                    + " coll:" + inout_coins.collection
+                    + " build:" + inout_coins.building
+                    + " contraption:" + inout_coins.contraption + " protection:" + inout_coins.protection
+                    + " animal:" + inout_coins.animal + " decor:" + inout_coins.decoration + " land:" + inout_coins.land);
+        }
+        // POST
+        // goldEarned, coinsEarned
 
+        // update Player status
+        String db_sql_write_FarmerIndex_login = "UPDATE FarmerIndex " +
+                "SET LastPlayDate=Now()," + "LastDailyReward = Now()," +
+                "PlayerName=" + "'" + in_userName + "'"
+                + " WHERE FacebookUser=" + "'" + in_facebookuser + "'";
+
+        String db_sql_write_Farmers = "UPDATE Farmers "
+                + " SET Fuel = if ("
+                + " Fuel < " + dataGameSettings.cached_FuelLimit
+                + " && (@f:= Fuel + floor(timestampdiff( second, LastFuelSave, Now() ) / " + dataGameSettings.cached_FuelRefillSecondsPerUnit + ") ) "
+                + " < " + dataGameSettings.cached_FuelLimit
+                + ", @f, " + dataGameSettings.cached_FuelLimit
+                + ")"
+                + ", PlayerName=" + "'" + in_userName + "'"
+                + ", Gold=Gold+" + inout_gold.earned + ", Coins=Coins+" + inout_coins.earned + " "
+                + " , WeeklyCoinsPoints=WeeklyCoinsPoints+" + inout_coins.earned + ", AllTimeCoinsPoints=AllTimeCoinsPoints+" + inout_coins.earned + ", LastFuelSave=Now() "
+                + " WHERE FacebookUser=" + "'" + in_facebookuser + "'";
+
+        ds.execute(db_sql_write_FarmerIndex_login, "write", in_facebookuser);
+        ds.execute(db_sql_write_Farmers, "write", in_facebookuser);
     }
 
     public void init(final String in_facebookuser, final String in_userName, final String in_skey) {
