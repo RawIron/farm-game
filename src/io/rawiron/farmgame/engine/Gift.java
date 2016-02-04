@@ -111,8 +111,8 @@ public class Gift {
                                 + " VALUES ( " + in_farmID + ", " + in_X + ", " + in_Y + ", 'PlantTreeTask', '" + giftItemName + "', Now(), Now() )"
                         , "write", in_facebookuser);
             } else if (unlockButtonType.equals("AnimalBuyButton")) {
-                AnimalItem animal = new AnimalItem(in_facebookuser, null, giftItemName, 0, in_X, in_Y);
-                animalInventory.add(in_facebookuser, animal, 1);
+                AnimalItem animal = new AnimalItem(in_facebookuser, giftItemName);
+                animalInventory.add(in_facebookuser, animal);
                 result = 1;
             } else if (unlockButtonType.equals("BuildingBuyButton")) {
                 Integer repeat = (Integer) dataProducer.cached.get(giftItemName).repeatable;

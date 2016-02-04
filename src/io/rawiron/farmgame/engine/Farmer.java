@@ -234,7 +234,7 @@ public class Farmer {
             }
 
             gold += building.goldValue(in_facebookuser, farmID);
-            gold += animal.goldValue(in_facebookuser, farmID);
+            gold += animal.i.goldValue(in_facebookuser, animal);
             gold += decoration.goldValue(in_facebookuser, farmID);
         }
 

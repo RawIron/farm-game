@@ -37,8 +37,8 @@ public class Farm {
     }
 
     public boolean create(String in_facebookuser, int in_farmID) {
-        String db_sql_write_Farms_new = "INSERT INTO Farms ( PlayerID ) VALUES ( " + in_farmID + " )";
-        ds.execute(db_sql_write_Farms_new, "write", in_facebookuser);
+        String sql = "INSERT INTO Farms ( PlayerID ) VALUES ( " + in_farmID + " )";
+        ds.execute(sql, "write", in_facebookuser);
 
         return true;
     }

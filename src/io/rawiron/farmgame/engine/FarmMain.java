@@ -25,7 +25,7 @@ class FarmMain {
 		Collection c = new Collection(ds, l, t);
 		Achievement av = new Achievement(ds, l, t);
 		AnimalInventory al = new AnimalInventory(ds, t);
-		Animal a = new Animal(al, ds, l, t);
+		Animal a = new Animal(al, l, t);
 	}
 
 }

@@ -13,34 +13,37 @@ public class AnimalInventory {
     private Trace t;
     private DataStore ds;
 
-    public AnimalInventory(DataStore dataStore, Trace tracer) {
+    public AnimalInventory(DataStore engine, Trace tracer) {
         t = tracer;
-        ds = dataStore;
+        ds = engine;
     }
 
-    public boolean add(String playerId, AnimalItem animal, int in_amount) {
+    public boolean add(String playerId, AnimalItem animal) {
         if (Trace.verbose && (Trace.verbose_level >= 3))
-            t.trace("variable dump  task animalID=" + animal.id + " in_amount=" + in_amount);
+            t.trace("variable dump - task - add animal to inventory: animalID=" + animal.id);
 
         int success = 0;
         int new_animalID = 0;
 
-        if (in_amount > 0 && (animal.id != null)) {
-            success = ds.execute(" UPDATE AnimalList SET LastHarvest=Now(), Progress=" + animal.progress +
+        if (animal.id != null) {
+            success = ds.execute(" UPDATE AnimalList SET " +
+                    "LastHarvest=Now(), Progress=" + animal.progress +
                     " WHERE FarmID=" + animal.playerId + " AND ID=" + animal.id, "write", playerId);
 
-        } else if (in_amount > 0 && (animal.id == null)) {
+        } else if (animal.id == null) {
             success = ds.execute(" INSERT INTO AnimalList ( FarmID, Animal, X, Y, LastHarvest, Progress) "
                     + " VALUES ( " + animal.playerId + ", '" + animal.name + "', " + animal.X + ", " + animal.Y + ", Now(), -1 ) ", "write", playerId);
 
             // doh ..
-            ResultSet db_res_animalID = ds.query("SELECT ID FROM AnimalList WHERE FarmID=" + animal.playerId + " AND Progress=-1", "write", playerId);
+            ResultSet db_res_animalID = ds.query("SELECT ID FROM AnimalList " +
+                    "WHERE FarmID=" + animal.playerId + " AND Progress=-1", "write", playerId);
             try {
                 if (db_res_animalID.next()) new_animalID = db_res_animalID.getInt("ID");
             } catch (SQLException e) {
             }
 
-            ds.execute("UPDATE AnimalList SET Progress=" + animal.progress + " WHERE FarmID=" + animal.playerId + " AND Progress=-1", "write", playerId);
+            ds.execute("UPDATE AnimalList SET Progress=" + animal.progress +
+                    " WHERE FarmID=" + animal.playerId + " AND Progress=-1", "write", playerId);
         }
 
         return true;
@@ -91,5 +94,29 @@ public class AnimalInventory {
         }
 
         return animal;
+    }
+
+    public boolean replace(String playerId, AnimalItem animal) {
+        ds.execute(" UPDATE AnimalList SET " +
+                "LastHarvest = " + animal.lastHarvest +
+                "X = " + animal.X +
+                "Y = " + animal.Y +
+                " WHERE FarmID=" + animal.playerId + " AND ID=" + animal.id, "write", playerId);
+        return true;
+    }
+
+    public int goldValue(String in_facebookuser) {
+        String sql =
+                " SELECT SUM( FLOOR( GoldCost * AnimalSaleRatio) ) AS GoldTotal "
+                        + " FROM AnimalList INNER JOIN Unlockables ON Name=Animal INNER JOIN GameSettings WHERE FarmID=" + in_facebookuser;
+
+        int gold = 0;
+        ResultSet result = ds.query(sql, "write", in_facebookuser);
+        try {
+            if (result.next()) gold = result.getInt("GoldTotal");
+        } catch (SQLException e) {
+        }
+
+        return gold;
     }
 }

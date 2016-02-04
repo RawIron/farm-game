@@ -1,21 +1,16 @@
 package io.rawiron.farmgame.engine;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import io.rawiron.farmgame.gamesettings.DataGameSettings;
 import io.rawiron.farmgame.gamesettings.DataProducer;
 import io.rawiron.farmgame.gamesettings.DataUnlockable;
-import io.rawiron.farmgame.system.DataStore;
 import io.rawiron.farmgame.system.Logging;
 import io.rawiron.farmgame.system.Trace;
 
 
 public class Animal {
-    private DataStore ds;
     private Trace t;
     private Logging l;
-    public AnimalInventory i;
+    private AnimalInventory i;
 
     private Achievement achievement;
     private Storage storage;
@@ -27,8 +22,7 @@ public class Animal {
     private DataUnlockable dataUnlockable;
 
 
-    public Animal(AnimalInventory inventory, DataStore engine, Logging in_l, Trace in_t) {
-        ds = engine;
+    public Animal(AnimalInventory inventory, Logging in_l, Trace in_t) {
         t = in_t;
         l = in_l;
         i = inventory;
@@ -81,8 +75,8 @@ public class Animal {
         if ((growthPercentage > 99)) {
             storage.add(in_facebookuser, in_farmID, crop, yield);
             achievement.add(in_facebookuser, in_farmID, crop, yield);
-            animal = new AnimalItem(in_facebookuser, in_animalID, in_animal, 0, -1, -1);
-            i.add(in_facebookuser, animal, 1);
+            animal = new AnimalItem(in_facebookuser, in_animal);
+            i.add(in_facebookuser, animal);
 
             l.log("Harvest, " + in_facebookuser + ", " + animal + ", " + yield);
         }
@@ -94,8 +88,8 @@ public class Animal {
 
     public boolean buy(String in_facebookuser, int in_farmID, int in_X, int in_Y, String in_itemName) {
         achievement.add(in_facebookuser, in_farmID, in_itemName, 1);
-        AnimalItem animal = new AnimalItem(in_facebookuser, null, in_itemName, 0, in_X, in_Y);
-        return i.add(in_facebookuser, animal, 1);
+        AnimalItem animal = new AnimalItem(in_facebookuser, in_itemName);
+        return i.add(in_facebookuser, animal);
     }
 
     public int sell(String in_facebookuser, int in_farmID, int in_animalID) {
@@ -118,27 +112,12 @@ public class Animal {
         return 1;
     }
 
-    public int goldValue(String in_facebookuser, int farmID) {
-        String db_sql_read_AnimalList_goldValue =
-                " SELECT SUM( FLOOR( GoldCost * AnimalSaleRatio) ) AS Gold "
-                        + " FROM AnimalList INNER JOIN Unlockables ON Name=Animal INNER JOIN GameSettings WHERE FarmID=" + farmID;
-
-        int gold = 0;
-        ResultSet goldQuery = ds.query(db_sql_read_AnimalList_goldValue, "write", in_facebookuser);
-        try {
-            if (goldQuery.next()) gold = goldQuery.getInt("Gold");
-        } catch (SQLException e) {
-        }
-
-        return gold;
-    }
-
-
-    public int move(String in_facebookuser, int in_farmID, int in_animalID, int in_X, int in_Y, int in_wander) {
-        ds.execute(" UPDATE AnimalList SET X=" + in_X + ",Y=" + in_Y + ", Wander=" + in_wander
-                        + " WHERE FarmID=" + in_farmID + " AND ID=" + in_animalID
-                , "write", in_facebookuser);
-        return 1;
+    public boolean move(String in_facebookuser, int in_animalID, int in_X, int in_Y) {
+        AnimalItem animal = i.getAnimal(in_facebookuser, in_animalID);
+        animal.X = in_X;
+        animal.Y = in_Y;
+        i.replace(in_facebookuser, animal);
+        return true;
     }
 
 }
