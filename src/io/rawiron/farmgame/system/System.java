@@ -41,12 +41,12 @@ public class System {
     }
 
     public int getShard(String in_facebookuser) {
-        String db_sql_read_FarmerIndex_exist =
+        String db_sql_read_Session_exist =
                 " SELECT DataBaseGroup "
-                        + " FROM FarmerIndex WHERE FacebookUser=" + "'" + in_facebookuser + "'";
+                        + " FROM Session WHERE FacebookUser=" + "'" + in_facebookuser + "'";
 
         int dbShard = -1;
-        ResultSet db_res_dbgroup = ds.query(db_sql_read_FarmerIndex_exist, "read", in_facebookuser);
+        ResultSet db_res_dbgroup = ds.query(db_sql_read_Session_exist, "read", in_facebookuser);
         try {
             if (db_res_dbgroup.next()) {
                 // shard where user data are stored

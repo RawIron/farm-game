@@ -225,7 +225,7 @@ public class Game {
         // goldEarned, coinsEarned
 
         // update Player status
-        String db_sql_write_FarmerIndex_login = "UPDATE FarmerIndex " +
+        String db_sql_write_Session_login = "UPDATE Session " +
                 "SET LastPlayDate=Now()," + "LastDailyReward = Now()," +
                 "PlayerName=" + "'" + in_userName + "'"
                 + " WHERE FacebookUser=" + "'" + in_facebookuser + "'";
@@ -242,7 +242,7 @@ public class Game {
                 + " , WeeklyCoinsPoints=WeeklyCoinsPoints+" + inout_coins.earned + ", AllTimeCoinsPoints=AllTimeCoinsPoints+" + inout_coins.earned + ", LastFuelSave=Now() "
                 + " WHERE FacebookUser=" + "'" + in_facebookuser + "'";
 
-        ds.execute(db_sql_write_FarmerIndex_login, "write", in_facebookuser);
+        ds.execute(db_sql_write_Session_login, "write", in_facebookuser);
         ds.execute(db_sql_write_Farmers, "write", in_facebookuser);
     }
 
@@ -253,7 +253,7 @@ public class Game {
 
         farmer.create(in_facebookuser, in_userName, farmID);
 
-        farm.create(in_facebookuser, farmID);
+        farm.create(in_facebookuser);
 
         if (!dataGameSettings.cached_StartingGift.equals("")) {
             gift.add(dataGameSettings.cached_StartingGift, "starterfarm", in_facebookuser);

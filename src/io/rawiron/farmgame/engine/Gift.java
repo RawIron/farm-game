@@ -243,13 +243,13 @@ public class Gift {
     public ResultSet retrieveList(String in_facebookuser) {
         String sql =
                 " SELECT GiftPairs.*, Unlockables.* "
-                        + ", FarmerIndex.PlayerName, FarmerIndex.Gender, FarmerIndex.HairStyle, FarmerIndex.SkinTone, FarmerIndex.Clothing "
+                        + ", Session.PlayerName, Session.Gender, Session.HairStyle, Session.SkinTone, Session.Clothing "
                         + ", ProductionHours AS ProductionSeconds, WitherTime, XPHarvestValue "
                         + ", Producers.Produce, Products.GoldValue, Products.CoinsValue, Products.SWF, DryYield "
                         + ", ual.HairStyleUnique "
-                        + " FROM GiftPairs INNER JOIN Unlockables ON Name=ItemName INNER JOIN FarmerIndex ON Giver=FarmerIndex.FacebookUser "
+                        + " FROM GiftPairs INNER JOIN Unlockables ON Name=ItemName INNER JOIN Session ON Giver=Session.FacebookUser "
                         + " LEFT JOIN Producers ON Producers.Name=Unlockables.Name LEFT JOIN Products ON Producers.Produce=Products.Name "
-                        + " LEFT JOIN UniqueAvatarList ual on ual.PlayerID=FarmerIndex.PlayerID "
+                        + " LEFT JOIN UniqueAvatarList ual on ual.PlayerID=Session.PlayerID "
                         + " WHERE Receiver=" + "'" + in_facebookuser + "'" + " AND OfferStatus ='Offered'";
 
         return ds.query(sql, "read", in_facebookuser);

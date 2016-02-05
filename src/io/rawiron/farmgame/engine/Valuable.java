@@ -192,7 +192,7 @@ public class Valuable {
                         + ", Coins=Coins+" + reward_amount_coins + ", WeeklyCoinsPoints=WeeklyCoinsPoints+" + reward_amount_coins + ", AllTimeCoinsPoints=AllTimeCoinsPoints+" + reward_amount_coins
                         + " WHERE 1=1 "
                         + " AND FacebookUser=" + "'" + in_facebookuser + "'", "write", in_facebookuser);
-                result = ds.execute("UPDATE FarmerIndex SET Level=Level+1 WHERE FacebookUser=" + "'" + in_facebookuser + "'", "write", in_facebookuser);
+                result = ds.execute("UPDATE Session SET Level=Level+1 WHERE FacebookUser=" + "'" + in_facebookuser + "'", "write", in_facebookuser);
 
                 level++;
                 reward_amount_coins = dataLevel.cached.get(level).reward;

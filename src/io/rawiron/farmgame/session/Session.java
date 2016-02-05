@@ -8,6 +8,7 @@ import io.rawiron.farmgame.system.Trace;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
 public class Session {
 
     private Trace t;
@@ -17,9 +18,9 @@ public class Session {
     public int login(String in_facebookuser, String in_userName, String in_skey, BalanceSheet inout_gold, BalanceSheet inout_coins) {
         if (Trace.verbose && (Trace.verbose_level >= 4)) t.trace("enter function =game.login=" + in_facebookuser);
 
-        String db_sql_read_FarmerIndex =
+        String db_sql_read_Session =
                 " SELECT PlayerID, skey, (DAY(LastDailyReward) = DAY(Now())) AS SameDay "
-                        + " FROM FarmerIndex WHERE FacebookUser=" + "'" + in_facebookuser + "'";
+                        + " FROM Session WHERE FacebookUser=" + "'" + in_facebookuser + "'";
 
         boolean gotSkey = false;
         String db_skey = null;
@@ -28,7 +29,7 @@ public class Session {
         int ID = -1;
         byte sameDay = 0;
 
-        ResultSet db_res_index = ds.query(db_sql_read_FarmerIndex, "read", in_facebookuser);
+        ResultSet db_res_index = ds.query(db_sql_read_Session, "read", in_facebookuser);
         try {
             if (db_res_index.next()) {
                 db_skey = db_res_index.getString("skey");

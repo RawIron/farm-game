@@ -36,9 +36,9 @@ public class Friend {
     public ResultSet retrieve(String in_facebookuser, String in_where) {
         String sql =
                 " SELECT Friends.* "
-                        + ", FarmerIndex.Level, FarmerIndex.PlayerName, FarmerIndex.Gender, FarmerIndex.HairStyle, FarmerIndex.SkinTone, FarmerIndex.Clothing "
+                        + ", Session.Level, Session.PlayerName, Session.Gender, Session.HairStyle, Session.SkinTone, Session.Clothing "
                         + ", timestampdiff( hour, LastChoreTime, Now()) as ChoreHoursAgo  "
-                        + " FROM Friends INNER JOIN FarmerIndex ON Friend=FacebookUser "
+                        + " FROM Friends INNER JOIN Session ON Friend=FacebookUser "
                         + " WHERE Farmer=" + "'" + in_facebookuser + "'";
 
         if (in_where != null && in_where.equals("active")) {
@@ -124,7 +124,7 @@ public class Friend {
             ds.execute("UPDATE Friends SET Status='active' WHERE Farmer='" + in_facebookuser + "' AND Friend='" + in_friend + "'"
                     , "write", in_facebookuser);
         } else {
-            ResultSet db_res_index = ds.query(" SELECT FacebookUser FROM FarmerIndex "
+            ResultSet db_res_index = ds.query(" SELECT FacebookUser FROM Session "
                             + " WHERE FacebookUser='" + in_friend + "'"
                     , "read", in_facebookuser);
 

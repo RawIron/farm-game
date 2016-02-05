@@ -78,29 +78,29 @@ public class Farmer {
     }
 
     public ResultSet retrieveIndex(String in_facebookuser) {
-        String db_sql_read_FarmerIndex =
+        String db_sql_read_Session =
                 " SELECT PlayerName, fi.PlayerID, Level, Gender, HairStyle, SkinTone, Clothing, LastPlayDate, DataBaseGroup "
                         + ", LastDailyReward, FacebookUser, CreateDate, 'match' AS KeyTest "
                         + ", IF ( FacebookUser IN (SELECT User FROM Administrators), 1, 0 ) AS Admin "
                         + ", ua.HairStyleUnique "
-                        + " FROM FarmerIndex as fi LEFT JOIN UniqueAvatarList as ua on fi.PlayerID=ua.PlayerID "
+                        + " FROM Session as fi LEFT JOIN UniqueAvatarList as ua on fi.PlayerID=ua.PlayerID "
                         + " WHERE FacebookUser=" + "'" + in_facebookuser + "'";
 
-        return ds.query(db_sql_read_FarmerIndex, "write", in_facebookuser);
+        return ds.query(db_sql_read_Session, "write", in_facebookuser);
     }
 
     public ResultSet retrieveSkey(String in_facebookuser, String in_skey) {
         String sql =
                 " SELECT FacebookUser, PlayerID, " + "'" + in_skey + "****" + "'" + "+ skey AS KeyTest "
-                        + " FROM FarmerIndex WHERE FacebookUser=" + "'" + in_facebookuser + "'";
+                        + " FROM Session WHERE FacebookUser=" + "'" + in_facebookuser + "'";
 
         ResultSet result = ds.query(sql, "write", in_facebookuser);
         return result;
     }
 
     public ResultSet getSafeFarmerData(String in_facebookuser) {
-        return ds.query(" SELECT FarmerIndex.FacebookUser, FarmerIndex.Gender, FarmerIndex.HairStyle, FarmerIndex.SkinTone, FarmerIndex.Clothing "
-                        + " FROM FarmerIndex WHERE FacebookUser=" + "'" + in_facebookuser + "'"
+        return ds.query(" SELECT Session.FacebookUser, Session.Gender, Session.HairStyle, Session.SkinTone, Session.Clothing "
+                        + " FROM Session WHERE FacebookUser=" + "'" + in_facebookuser + "'"
                 , "write", in_facebookuser);
     }
 
@@ -151,7 +151,7 @@ public class Farmer {
     }
 
     public void updateAppearance(String in_facebookuser, String in_SkinTone, String in_Clothing, String in_HairStyle, String in_Gender) {
-        ds.execute(" UPDATE FarmerIndex "
+        ds.execute(" UPDATE Session "
                         + " SET SkinTone=" + in_SkinTone + ", Clothing=" + in_Clothing + ", HairStyle=" + in_HairStyle + ", Gender='" + in_Gender + "'"
                         + " WHERE FacebookUser='" + in_facebookuser + "'"
                 , "write", in_facebookuser);
@@ -269,10 +269,10 @@ public class Farmer {
     }
 
     public boolean createIndex(String in_facebookuser, String in_userName, String in_skey) {
-        String db_sql_write_FarmerIndex_new = " INSERT INTO FarmerIndex "
+        String db_sql_write_Session_new = " INSERT INTO Session "
                 + " ( FacebookUser, PlayerName, CreateDate, LastPlayDate, LastDailyReward, skey ) "
                 + " VALUES ( " + "'" + in_facebookuser + "'" + "," + "'" + in_userName + "'" + ", Now(), Now(), Now(), " + ", '" + in_skey + "' )";
-        ds.execute(db_sql_write_FarmerIndex_new, "write", in_facebookuser);
+        ds.execute(db_sql_write_Session_new, "write", in_facebookuser);
 
         return true;
     }

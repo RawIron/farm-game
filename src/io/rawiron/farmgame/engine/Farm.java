@@ -26,18 +26,20 @@ public class Farm {
 
 
     public ResultSet loadFarm(String in_facebookuser, String in_friendID) {
-        if (l.log_data_read) ds.execute("INSERT INTO `log` "
-                        + " VALUES ( Now(), 'loadFarm','" + in_facebookuser + "','0','" + in_friendID + "',0,'L',null,1)"
-                , "log", null);
+        if (l.log_data_read) {
+            ds.execute("INSERT INTO `log` "
+                            + " VALUES ( Now(), 'loadFarm','" + in_facebookuser + "','0','" + in_friendID + "',0,'L',null,1)"
+                    , "log", null);
+        }
 
-        return ds.query(" SELECT PlayerID, FacebookUser, DataBaseGroup "
-                        + " FROM FarmerIndex "
+        return ds.query(" SELECT PlayerID, FacebookUser, skey "
+                        + " FROM Session "
                         + " WHERE FacebookUser=" + "'" + in_friendID + "'"
                 , "read", in_facebookuser);
     }
 
-    public boolean create(String in_facebookuser, int in_farmID) {
-        String sql = "INSERT INTO Farms ( PlayerID ) VALUES ( " + in_farmID + " )";
+    public boolean create(String in_facebookuser) {
+        String sql = "INSERT INTO Farms ( PlayerID ) VALUES ( " + in_facebookuser + " )";
         ds.execute(sql, "write", in_facebookuser);
 
         return true;
