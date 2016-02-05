@@ -7,9 +7,6 @@ import java.sql.SQLException;
 
 import java.util.HashMap;
 
-import io.rawiron.farmgame.system.DataStore;
-import io.rawiron.farmgame.system.Trace;
-
 import it.gotoandplay.smartfoxserver.db.*;
 
 
@@ -42,7 +39,7 @@ public class jdbcDB implements DataStore {
             connMap.put(key, con);
             success = true;
         } else {
-            if (t.verbose && (t.verbose_level >= 1)) t.trace("error connection NULL for=" + key);
+            if (t.VERBOSE && (t.VERBOSE_LEVEL >= 1)) t.trace("error connection NULL for=" + key);
         }
         return success;
     }
@@ -77,7 +74,7 @@ public class jdbcDB implements DataStore {
      * @return success:Boolean
      */
     {
-        if (t.verbose && (t.verbose_level >= 4)) t.trace(key + ":" + sql);
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace(key + ":" + sql);
 
         Statement stmt = null;
         int success = 0;
@@ -86,13 +83,13 @@ public class jdbcDB implements DataStore {
         con = (Connection) connMap.get(key);
         if (con != null) {
             try {
-                if (t.trace_timers) t.timer.push(t.getTimer());
+                if (t.TRACE_TIMERS) t.timer.push(t.getTimer());
                 stmt = con.createStatement();
                 success = stmt.executeUpdate(sql);
-                if (t.trace_timers) t.timer.push(t.getTimer());
+                if (t.TRACE_TIMERS) t.timer.push(t.getTimer());
 
                 // Show the time it took to parse the request
-                if (t.trace_timers) t.trace("DB Request took: " + (t.timer.pop() - t.timer.pop()) + " ms.");
+                if (t.TRACE_TIMERS) t.trace("DB Request took: " + (t.timer.pop() - t.timer.pop()) + " ms.");
             } catch (SQLException e) {
                 t.trace("SQLException: " + e.getMessage());
                 t.trace("SQLState: " + e.getSQLState());
@@ -137,7 +134,7 @@ public class jdbcDB implements DataStore {
      *	Cost:low
       */
     {
-        if (t.verbose && (t.verbose_level >= 3)) t.trace(key + ":" + sql);
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 3)) t.trace(key + ":" + sql);
 
         Statement stmt = null;
         ResultSet rs = null;
@@ -146,13 +143,13 @@ public class jdbcDB implements DataStore {
         con = (Connection) connMap.get(key);
         if (con != null) {
             try {
-                if (t.trace_timers) t.timer.push(t.getTimer());
+                if (t.TRACE_TIMERS) t.timer.push(t.getTimer());
                 stmt = con.createStatement();
                 rs = stmt.executeQuery(sql);
-                if (t.trace_timers) t.timer.push(t.getTimer());
+                if (t.TRACE_TIMERS) t.timer.push(t.getTimer());
 
                 // Show the time it took to parse the request
-                if (t.trace_timers) t.trace("DB Request took: " + (t.timer.pop() - t.timer.pop()) + " ms.");
+                if (t.TRACE_TIMERS) t.trace("DB Request took: " + (t.timer.pop() - t.timer.pop()) + " ms.");
             } catch (SQLException e) {
                 t.trace("SQLException: " + e.getMessage());
                 t.trace("SQLState: " + e.getSQLState());

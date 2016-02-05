@@ -16,7 +16,7 @@ public class Session {
     private Game game;
 
     public int login(String in_facebookuser, String in_userName, String in_skey, BalanceSheet inout_gold, BalanceSheet inout_coins) {
-        if (Trace.verbose && (Trace.verbose_level >= 4)) t.trace("enter function =game.login=" + in_facebookuser);
+        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 4)) t.trace("enter function =game.login=" + in_facebookuser);
 
         String db_sql_read_Session =
                 " SELECT PlayerID, skey, (DAY(LastDailyReward) = DAY(Now())) AS SameDay "
@@ -66,7 +66,7 @@ public class Session {
             rc = 0;
         }
 
-        if (Trace.verbose && (Trace.verbose_level >= 4)) t.trace("exit function =game.login=" + rc);
+        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 4)) t.trace("exit function =game.login=" + rc);
         return rc;
     }
 }

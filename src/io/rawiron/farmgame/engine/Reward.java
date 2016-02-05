@@ -68,7 +68,7 @@ public class Reward {
  *
  */
     {
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("enter function =giveReward=   rewardName=" + rewardName + "");
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace("enter function =giveReward=   rewardName=" + rewardName + "");
 
         // BUG .. OR Rl.ID=rewardName  .. JobList-Mastery uses RewardList.ID and NOT RewardList.RewardName
         String db_sql_read_RewardList =
@@ -138,7 +138,7 @@ public class Reward {
             }
         }
 
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("exit function =giveReward=");
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace("exit function =giveReward=");
         return 1;
     }
 

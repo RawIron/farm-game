@@ -19,7 +19,7 @@ public class AnimalInventory {
     }
 
     public boolean add(String playerId, AnimalItem animal) {
-        if (Trace.verbose && (Trace.verbose_level >= 3))
+        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 3))
             t.trace("variable dump - task - add animal to inventory: animalID=" + animal.id);
 
         int success = 0;
@@ -50,7 +50,7 @@ public class AnimalInventory {
     }
 
     public boolean sub(String playerId, AnimalItem animal, int in_amount) {
-        if (Trace.verbose && (Trace.verbose_level >= 0) && (in_amount < 0))
+        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 0) && (in_amount < 0))
             t.trace("assert failure in_amount=" + in_amount + " is <0");
 
         ds.execute(" DELETE FROM AnimalList WHERE FarmID=" + animal.playerId + " AND ID=" + animal.id, "write", playerId);

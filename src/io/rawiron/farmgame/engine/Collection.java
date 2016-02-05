@@ -46,7 +46,7 @@ public class Collection {
  *
  */
     {
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("enter function =Collection.testComplete=");
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace("enter function =Collection.testComplete=");
 
         boolean complete = false;
 

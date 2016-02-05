@@ -63,9 +63,9 @@ public class Achievement {
      *
      */
     {
-        if (t.verbose && (((Character) in_TotalOrStored == null)))
+        if (t.VERBOSE && (((Character) in_TotalOrStored == null)))
             t.trace("assert failure TotalOrStored=" + in_TotalOrStored + " invalid");
-        if (t.verbose && (in_TotalOrStored == 'S'))
+        if (t.VERBOSE && (in_TotalOrStored == 'S'))
             t.trace("assert failure TotalOrStored=" + in_TotalOrStored + " request for an achievement of type Stored");
 
 

@@ -54,7 +54,7 @@ public class Animal {
 
 
     public Boolean harvest(String in_facebookuser, int in_farmID, int in_animalID, String in_animal) {
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("enter function =animal_handleHarvest=");
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace("enter function =animal_handleHarvest=");
 
         int user_timeMultiplier = 1;
         user_timeMultiplier = farmer.getTimeMultiplier(in_facebookuser);
@@ -81,7 +81,7 @@ public class Animal {
             l.log("Harvest, " + in_facebookuser + ", " + animal + ", " + yield);
         }
 
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("exit function =animal_handleHarvest=");
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace("exit function =animal_handleHarvest=");
         return true;
     }
 

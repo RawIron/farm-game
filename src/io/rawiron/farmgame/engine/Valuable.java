@@ -86,7 +86,7 @@ public class Valuable {
     public boolean test(String in_facebookuser, String in_costItem, char in_currency) {
         boolean precondition_task = false;
 
-        if (t.verbose && (t.verbose_level >= 3)) t.trace("variable dump currency=" + in_currency);
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 3)) t.trace("variable dump currency=" + in_currency);
 
         // one of the conditions must be met
         String db_sql_read_Cost_condition = " SELECT max(requirement) as check_true FROM ( "
@@ -136,11 +136,11 @@ public class Valuable {
      *	Cost:high
      */
     {
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("enter function =levelUpHandler=" + XP_earned);
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace("enter function =levelUpHandler=" + XP_earned);
         // ASSERT
         //
         // XP_earned > 0
-        if (t.verbose && (t.verbose_level >= 0) && (XP_earned <= 0))
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 0) && (XP_earned <= 0))
             t.trace("assert failure XP_earned=" + XP_earned + " <=0");
 
 
@@ -174,15 +174,15 @@ public class Valuable {
             reward_amount_coins = dataLevel.cached.get(level).reward;
             XPNeeded = dataLevel.cached.get(level).xpNeeded;
             levelUp = (experience_sum >= XPNeeded);
-            if (t.verbose && (XP_earned == 0) && (levelUp))
+            if (t.VERBOSE && (XP_earned == 0) && (levelUp))
                 t.trace("assert failure XP_earned=" + XP_earned + " and levelUp is" + levelUp);
-            if (t.verbose && (t.verbose_level >= 3))
+            if (t.VERBOSE && (t.VERBOSE_LEVEL >= 3))
                 t.trace("variable dump = " + experience_sum + " " + XPNeeded + " " + levelUp);
 
 
             levelUpCounter = 0;
             while (levelUp) {
-                if (t.verbose && (t.verbose_level >= 3))
+                if (t.VERBOSE && (t.VERBOSE_LEVEL >= 3))
                     t.trace("variable dump = " + experience_sum + " " + XPNeeded + " " + (experience_sum - XPNeeded) + " " + levelUp);
 
                 experience_sum -= XPNeeded;
@@ -210,7 +210,7 @@ public class Valuable {
             }
         }
 
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("exit function =levelUpHandler");
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace("exit function =levelUpHandler");
         return result;
     }
 

@@ -37,7 +37,7 @@ public class Transaction {
                 valuable.add(in_facebookUser, earned_amount_coins, -cost_amount_gold, 0, 0, -cost_amount_fuel, 0);
             }
         } else {
-            if (Trace.verbose && (Trace.verbose_level >= 0))
+            if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 0))
                 t.trace("assert failure precondition met but costItem missing");
         }
 

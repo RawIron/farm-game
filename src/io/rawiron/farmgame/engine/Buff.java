@@ -27,7 +27,7 @@ public int sub( String in_facebookuser, int in_farmID, int in_X, int in_Y, Strin
 *
 */
 {
-	if (t.verbose && (t.verbose_level>=0) && ((1* in_amount)<0) ) t.trace("assert failure in_amount=" + in_amount + " is <0");
+	if (t.VERBOSE && (t.VERBOSE_LEVEL >=0) && ((1* in_amount)<0) ) t.trace("assert failure in_amount=" + in_amount + " is <0");
 
 	int success = this.add( in_facebookuser, in_farmID, in_X, in_Y, in_type, -in_amount );
 	return success;

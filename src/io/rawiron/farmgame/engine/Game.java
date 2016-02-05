@@ -113,7 +113,7 @@ public class Game {
 
             result = 1;
         } else {
-            if (Trace.verbose && (Trace.verbose_level >= 0)) t.trace("assert failure - Not enough of something");
+            if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 0)) t.trace("assert failure - Not enough of something");
             result = 2;
         }
 
@@ -193,7 +193,7 @@ public class Game {
                     inout_gold.land = queryResult.getInt("TotalGoldReward");
                     inout_coins.land = queryResult.getInt("TotalCoinsReward");
                 }
-                if (t.verbose) t.trace(type);
+                if (t.VERBOSE) t.trace(type);
             }
         } catch (SQLException e) {
         }
@@ -206,7 +206,7 @@ public class Game {
                 + inout_coins.animal + inout_coins.decoration + inout_coins.clothing + inout_coins.land;
 
 
-        if (Trace.verbose &&(Trace.verbose_level >=3)) {
+        if (Trace.VERBOSE &&(Trace.VERBOSE_LEVEL >=3)) {
             t.trace("day:" + inout_gold.daily +
                     " coll:" + inout_gold.collection +
                     " friend:" + inout_gold.friend
@@ -214,7 +214,7 @@ public class Game {
                     + " contraption:" + inout_gold.contraption + " protection:" + inout_gold.protection
                     + " animal:" + inout_gold.animal + " decor:" + inout_gold.decoration + " land:" + inout_gold.land);
         }
-        if(Trace.verbose &&(Trace.verbose_level >=3)) {
+        if(Trace.VERBOSE &&(Trace.VERBOSE_LEVEL >=3)) {
             t.trace("day:" + inout_coins.daily
                     + " coll:" + inout_coins.collection
                     + " build:" + inout_coins.building

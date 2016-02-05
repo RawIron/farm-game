@@ -79,7 +79,7 @@ public class Unlockable {
  * OUT
  */
     {
-        if (Trace.verbose && (Trace.verbose_level >= 4)) t.trace("enter function =BuyUnlockable=");
+        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 4)) t.trace("enter function =BuyUnlockable=");
         boolean success = false;
 
         int playerID = 0;
@@ -113,7 +113,7 @@ public class Unlockable {
             }
         }
 
-        if (Trace.verbose && (Trace.verbose_level >= 4)) t.trace("exit function =BuyUnlockable=");
+        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 4)) t.trace("exit function =BuyUnlockable=");
         return success;
     }
 
@@ -174,7 +174,7 @@ public class Unlockable {
  * unlockable.XPEarned
  */
     {
-        if (Trace.verbose && (Trace.verbose_level >= 4)) t.trace("enter function =payForUnlock=");
+        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 4)) t.trace("enter function =payForUnlock=");
         boolean result = false;
 
 
@@ -254,7 +254,7 @@ public class Unlockable {
             }
         }
 
-        if (Trace.verbose && (Trace.verbose_level >= 4)) t.trace("exit function =payForUnlock= with result=" + result);
+        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 4)) t.trace("exit function =payForUnlock= with result=" + result);
 
         return result;
     }

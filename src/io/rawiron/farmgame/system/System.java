@@ -35,7 +35,7 @@ public class System {
             } catch (SQLException e) {
             }
         }
-        if (t.verbose) t.trace("Assigned to=" + dbShard);
+        if (t.VERBOSE) t.trace("Assigned to=" + dbShard);
 
         return dbShard;
     }

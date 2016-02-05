@@ -74,8 +74,8 @@ public class PlotList {
  *	Cost:high
  */
     {
-        if (t.trace_timers) t.timer.push(t.getTimer());
-        if (t.verbose) t.trace("enter function retrievePlotList ");
+        if (t.TRACE_TIMERS) t.timer.push(t.getTimer());
+        if (t.VERBOSE) t.trace("enter function retrievePlotList ");
 
         if (l.log_data_read)
             ds.execute("INSERT INTO `log` VALUES ( Now(), 'retrievePlotList','" + in_facebookuser + "','" + in_farmID + "','',0,'L',null,1)"
@@ -110,8 +110,8 @@ public class PlotList {
 
 
         // Show the time it took to parse the request
-        if (t.trace_timers) t.timer.push(t.getTimer());
-        if (t.trace_timers) t.trace("Request took: " + (t.timer.pop() - t.timer.pop()) + " ms.");
+        if (t.TRACE_TIMERS) t.timer.push(t.getTimer());
+        if (t.TRACE_TIMERS) t.trace("Request took: " + (t.timer.pop() - t.timer.pop()) + " ms.");
 
 
         return queryRes;
@@ -228,7 +228,7 @@ public class PlotList {
  *	Cost:high
  */
     {
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("enter function =handleHarvest=");
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace("enter function =handleHarvest=");
         int yield;
 
         // what is it
@@ -302,7 +302,7 @@ public class PlotList {
         ds.execute("INSERT INTO `log` VALUES ( Now(), 'Harvest','" + in_facebookuser + "','" + in_farmID + "','" + plant + "'," + yield + ", 'N',null,1 )"
                 , "log", in_facebookuser);
 
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("exit function =handleHarvest=");
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace("exit function =handleHarvest=");
 
         return 1;
     }
@@ -364,8 +364,8 @@ public class PlotList {
 
                 i++;
             }
-            if (t.verbose && (i == 0)) t.trace("assert failure Plot X,Y=" + in_X + " " + in_Y + " does not exist");
-            if (t.verbose && (i > 1)) t.trace("assert failure Plot fertilized and grown=" + i + " times");
+            if (t.VERBOSE && (i == 0)) t.trace("assert failure Plot X,Y=" + in_X + " " + in_Y + " does not exist");
+            if (t.VERBOSE && (i > 1)) t.trace("assert failure Plot fertilized and grown=" + i + " times");
         } catch (SQLException e) {
         }
 
@@ -421,14 +421,14 @@ public class PlotList {
             in_vitality = rowToGrow.getInt("Vitality");
         } catch (SQLException e) {
         }
-        if (t.verbose && (t.verbose_level >= 4))
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4))
             t.trace("enter function =growRow= " + in_contents + " " + in_elapsedTime + " " + in_vitality);
 
 
         // ASSERT
         //
         if ((user_timeMultiplier < 0)) {
-            if (t.verbose) t.trace("assert failure timeMultiplier=" + user_timeMultiplier + " undefined");
+            if (t.VERBOSE) t.trace("assert failure timeMultiplier=" + user_timeMultiplier + " undefined");
             user_timeMultiplier = 1;
         }
 
@@ -438,7 +438,7 @@ public class PlotList {
 
         productionHours_units_sec = dataProducer.cached.get(in_contents).productionHours;
         if (productionHours_units_sec == null) {
-            if (t.verbose) t.trace("assert failure productionHours=" + productionHours_units_sec + " undefined");
+            if (t.VERBOSE) t.trace("assert failure productionHours=" + productionHours_units_sec + " undefined");
             return 2;
         }
         growthPercentage = 100 * user_timeMultiplier / productionHours_units_sec;
@@ -467,9 +467,9 @@ public class PlotList {
                 for (i = 0; db_res_buff.next(); i++) {
                     title = db_res_buff.getString("Title");
                 }
-                if (t.verbose && (i == 0))
+                if (t.VERBOSE && (i == 0))
                     t.trace("assert failure ActiveBuff X,Y=" + in_X + " " + in_Y + " does not exist");
-                if (t.verbose && (i > 0)) t.trace("growthPercentage modified=" + i + " times");
+                if (t.VERBOSE && (i > 0)) t.trace("growthPercentage modified=" + i + " times");
             } catch (SQLException e) {
             }
 
@@ -500,7 +500,7 @@ public class PlotList {
         }
 
 
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("exit function =growRow= plantGrowth=" + plantGrowth);
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace("exit function =growRow= plantGrowth=" + plantGrowth);
         // rowToGrow.addItem( "Vitality", plantGrowth );
         return plantGrowth;
 
@@ -583,7 +583,7 @@ public class PlotList {
 // for example a 2x3-plot building:
 //	3171 = 000110001100011
     {
-        if (t.verbose && (t.verbose_level >= 4))
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4))
             t.trace("enter function =plotList_areaWork=" + in_farmID + " " + in_X + " " + in_Y);
 
         int footprint = in_bitMatrix;
@@ -612,7 +612,7 @@ public class PlotList {
             }
         }
 
-        if (t.verbose && (t.verbose_level >= 4)) t.trace("exit function =plotList_areaWork=");
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace("exit function =plotList_areaWork=");
     }
 
 

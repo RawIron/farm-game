@@ -183,7 +183,7 @@ public class Job {
             if (isJob) {
                 // (b,q) and (d,q)
                 //
-                if (t.verbose && (t.verbose_level >= 3))
+                if (t.VERBOSE && (t.VERBOSE_LEVEL >= 3))
                     t.trace("variable dump " + buildingQuantity + " " + decorationQuantity);
 
                 if (buildingQuantity > 0) {
@@ -200,7 +200,7 @@ public class Job {
                 // POST
                 // hasBuilding
                 // hasDecoration
-                if (t.verbose && (t.verbose_level >= 3)) t.trace("variable dump " + hasBuilding + " " + hasDecoration);
+                if (t.VERBOSE && (t.VERBOSE_LEVEL >= 3)) t.trace("variable dump " + hasBuilding + " " + hasDecoration);
 
 
                 // (r1,q1) and (r2,q2) and (r3,q3) and (r4,q4) and (r5,q5)

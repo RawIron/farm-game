@@ -187,7 +187,7 @@ public class Building {
         sub(Dl) := add(-Dl)
     */
     {
-        if (t.verbose && (t.verbose_level >= 0) && (in_amount < 0)) {
+        if (t.VERBOSE && (t.VERBOSE_LEVEL >= 0) && (in_amount < 0)) {
             t.trace("assert failure in_amount=" + in_amount + " is <0");
         }
 
