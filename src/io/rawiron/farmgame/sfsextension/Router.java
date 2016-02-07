@@ -49,7 +49,7 @@ public class Router {
     private LoaderGame loaderGame;
     private LoaderGamesettings loaderGamesettings;
     private LoaderLocalizedStrings localizedStrings;
-    private SfsMapperLogin sfsMapperLogin;
+    private Login login;
 
 
     public Router(DataStore in_ds, Logging in_l, Trace in_t) {
@@ -70,8 +70,8 @@ public class Router {
         this.localizedStrings = localizedStrings;
     }
 
-    public void setSfsMapperLogin(SfsMapperLogin in_sfsl) {
-        sfsMapperLogin = in_sfsl;
+    public void setLogin(Login in_sfsl) {
+        login = in_sfsl;
     }
 
     public void setAnimal(Animal in_a) {
@@ -501,7 +501,7 @@ public class Router {
                 e.printStackTrace();
             }
 
-            result = sfsMapperLogin.login(in_facebookuser, in_userName, in_skey);
+            result = login.login(in_facebookuser, in_userName, in_skey);
         } else if (cmd.equals("getGameSettings")) {
             // getGameSettings;
             String in_itemType = null;
