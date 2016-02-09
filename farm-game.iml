@@ -16,6 +16,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jysfs" level="project" />
+    <orderEntry type="library" name="Python 2.7.6 virtualenv at ~/venv_datahacks interpreter library" level="application" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.8.1" level="project" />
     <orderEntry type="library" name="Maven: org.json:json:20151123" level="project" />
     <orderEntry type="library" name="Maven: net.sf.json-lib:json-lib:2.4" level="project" />
@@ -25,6 +26,9 @@
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.5" level="project" />
     <orderEntry type="library" name="Maven: net.sf.ezmorph:ezmorph:1.0.6" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.38" level="project" />
+    <orderEntry type="library" name="Maven: org.javalite:activejdbc:1.4.11" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: org.javalite:javalite-common:1.4.11" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: smartfoxserver:sfs:0.0">
         <CLASSES>
@@ -34,6 +38,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Python 2.7.6 virtualenv at ~/venv_datahacks interpreter library" level="application" />
   </component>
 </module>

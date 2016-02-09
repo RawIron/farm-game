@@ -19,7 +19,7 @@ public class Gift {
     private Decoration decoration;
     private Buff buff;
     private Animal animal;
-    private AnimalInventory animalInventory;
+    private AnimalInventoryRaw animalInventory;
     private PlotList plotList;
     private Valuable valuable;
 
@@ -37,7 +37,7 @@ public class Gift {
         animal = in_a;
     }
 
-    public void setAnmialInventory(AnimalInventory al) { animalInventory = al; }
+    public void setAnmialInventory(AnimalInventoryRaw al) { animalInventory = al; }
 
     public void setBuff(Buff in_b) {
         buff = in_b;

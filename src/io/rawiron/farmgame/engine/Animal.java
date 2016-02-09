@@ -10,7 +10,7 @@ import io.rawiron.farmgame.system.Trace;
 public class Animal {
     private Trace t;
     private Logging l;
-    private AnimalInventory i;
+    private AnimalInventoryRaw i;
 
     private Achievement achievement;
     private Storage storage;
@@ -22,7 +22,7 @@ public class Animal {
     private DataUnlockable dataUnlockable;
 
 
-    public Animal(AnimalInventory inventory, Logging in_l, Trace in_t) {
+    public Animal(AnimalInventoryRaw inventory, Logging in_l, Trace in_t) {
         t = in_t;
         l = in_l;
         i = inventory;
@@ -107,7 +107,7 @@ public class Animal {
         earn_amount_gold = (int) (earn_amount_gold * dataGameSettings.cached_AnimalSaleRatio);
 
         valuable.add(in_facebookuser, in_farmID, 0, earn_amount_gold, 0, 0, 0);
-        i.sub(in_facebookuser, animal, 1);
+        i.sub(in_facebookuser, animal);
 
         return 1;
     }

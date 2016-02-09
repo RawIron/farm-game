@@ -39,7 +39,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.38</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.javalite</groupId>
+            <artifactId>activejdbc</artifactId>
+            <version>1.4.11</version>
+        </dependency>
         <dependency>
             <groupId>smartfoxserver</groupId>
             <artifactId>sfs</artifactId>

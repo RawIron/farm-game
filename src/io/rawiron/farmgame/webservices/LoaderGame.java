@@ -5,7 +5,6 @@ import java.sql.SQLException;
 
 import io.rawiron.farmgame.engine.*;
 import io.rawiron.farmgame.system.Util;
-import io.rawiron.farmgame.webservices.LoaderLocalizedStrings;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +32,7 @@ public class LoaderGame {
     private Gift gift;
     private Friend friend;
     private Job job;
-    private AnimalInventory animalInventory;
+    private AnimalInventoryRaw animalInventory;
     private Animal animal;
     private Decoration decoration;
     private Collection collection;
@@ -65,7 +64,7 @@ public class LoaderGame {
         animal = in_a;
     }
 
-    public void setAnimalInventory(AnimalInventory al) { animalInventory = al; }
+    public void setAnimalInventory(AnimalInventoryRaw al) { animalInventory = al; }
 
     public void setAchievement(Achievement in_av) {
         achievement = in_av;

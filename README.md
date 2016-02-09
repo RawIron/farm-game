@@ -16,3 +16,9 @@ Each feature is a new function.
 Code the required SQL statements, run them in the appropriate sequence and return the result.
 Everything is synchronous.
 A lot of Stop-and-Go: run a bit of code, wait for the database, run a bit of code, and so forth.
+
+### do better
+* exception handling. currently exceptions get eaten by many classes.
+* database abstraction. python has the awesome sqlalchemy package. use something similar.
+* session management.
+* write tests.

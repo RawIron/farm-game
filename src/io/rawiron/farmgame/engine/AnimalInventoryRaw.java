@@ -8,13 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-public class AnimalInventory {
+public class AnimalInventoryRaw {
 
     private Trace t;
     private DataStore ds;
 
-    public AnimalInventory(DataStore engine, Trace tracer) {
-        t = tracer;
+    public AnimalInventoryRaw(DataStore engine, Trace trace) {
+        t = trace;
         ds = engine;
     }
 
@@ -49,24 +49,21 @@ public class AnimalInventory {
         return true;
     }
 
-    public boolean sub(String playerId, AnimalItem animal, int in_amount) {
-        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 0) && (in_amount < 0))
-            t.trace("assert failure in_amount=" + in_amount + " is <0");
-
+    public boolean sub(String playerId, AnimalItem animal) {
         ds.execute(" DELETE FROM animal_list WHERE player_id=" + animal.playerId +
                 " AND animal_id=" + animal.id, "write", playerId);
         return true;
     }
 
-    public ResultSet retrieve(String in_facebookuser) {
+    public ResultSet retrieve(String playerId) {
         // BUGS Progress is not calculated using this.harvest()
         String db_sql_read_animal_list =
                 String.format(" SELECT animal_id, animal_name, x, y, player_id , " +
                         "TIMESTAMPDIFF( SECOND, last_harvest, Now() ) / ProductionHours * 100 AS progress" +
                         "FROM animal_list LEFT JOIN Producers ON animal_name=Name  " +
-                        "WHERE player_id='%s'", in_facebookuser);
+                        "WHERE player_id='%s'", playerId);
 
-        return ds.query(db_sql_read_animal_list, "read", in_facebookuser);
+        return ds.query(db_sql_read_animal_list, "read", playerId);
     }
 
     public AnimalItem getAnimal(String playerId, Integer animalId) {
@@ -106,14 +103,14 @@ public class AnimalInventory {
         return true;
     }
 
-    public int goldValue(String in_facebookuser) {
+    public int goldValue(String playerId) {
         String sql =
                 " SELECT SUM( FLOOR( GoldCost * AnimalSaleRatio) ) AS GoldTotal " +
                         " FROM animal_list INNER JOIN Unlockables ON animal_name=Animal " +
-                        " INNER JOIN GameSettings WHERE player_id=" + in_facebookuser;
+                        " INNER JOIN GameSettings WHERE player_id=" + playerId;
 
         int gold = 0;
-        ResultSet result = ds.query(sql, "write", in_facebookuser);
+        ResultSet result = ds.query(sql, "write", playerId);
         try {
             if (result.next()) gold = result.getInt("GoldTotal");
         } catch (SQLException e) {
