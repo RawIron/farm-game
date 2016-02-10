@@ -32,7 +32,7 @@ public class LoaderGame {
     private Gift gift;
     private Friend friend;
     private Job job;
-    private AnimalInventoryRaw animalInventory;
+    private IAnimalInventory animalInventory;
     private Animal animal;
     private Decoration decoration;
     private Collection collection;
@@ -64,7 +64,7 @@ public class LoaderGame {
         animal = in_a;
     }
 
-    public void setAnimalInventory(AnimalInventoryRaw al) { animalInventory = al; }
+    public void setAnimalInventory(IAnimalInventory al) { animalInventory = al; }
 
     public void setAchievement(Achievement in_av) {
         achievement = in_av;

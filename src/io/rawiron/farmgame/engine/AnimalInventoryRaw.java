@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-public class AnimalInventoryRaw {
+public class AnimalInventoryRaw implements IAnimalInventory {
 
     private Trace t;
     private DataStore ds;

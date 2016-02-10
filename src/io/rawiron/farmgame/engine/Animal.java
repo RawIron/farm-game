@@ -10,7 +10,7 @@ import io.rawiron.farmgame.system.Trace;
 public class Animal {
     private Trace t;
     private Logging l;
-    private AnimalInventoryRaw i;
+    private IAnimalInventory i;
 
     private Achievement achievement;
     private Storage storage;
@@ -22,7 +22,7 @@ public class Animal {
     private DataUnlockable dataUnlockable;
 
 
-    public Animal(AnimalInventoryRaw inventory, Logging in_l, Trace in_t) {
+    public Animal(IAnimalInventory inventory, Logging in_l, Trace in_t) {
         t = in_t;
         l = in_l;
         i = inventory;

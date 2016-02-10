@@ -136,7 +136,7 @@ public class Extension extends AbstractExtension {
         Unlockable u = new Unlockable(ds, l, t);
         Reward rw = new Reward(ds, l, t);
         Achievement av = new Achievement(ds, l, t);
-        AnimalInventoryRaw al = new AnimalInventoryRaw(ds, t);
+        IAnimalInventory al = new AnimalInventoryRaw(ds, t);
         Animal a = new Animal(al, l, t);
         Job j = new Job(ds, l, t);
         Collection c = new Collection(ds, l, t);

@@ -26,7 +26,7 @@ public class Farmer {
 
     private static int techType = 0;
     private static final int techTypeMax = 3;
-    private AnimalInventoryRaw animalInventory;
+    private IAnimalInventory animalInventory;
 
 
     public Farmer(Valuable in_v, DataStore in_ds, Logging in_l, Trace in_t) {
@@ -44,7 +44,7 @@ public class Farmer {
         animal = in_a;
     }
 
-    public void setAnimalInventory(AnimalInventoryRaw al) {
+    public void setAnimalInventory(IAnimalInventory al) {
         animalInventory = al;
     }
 
