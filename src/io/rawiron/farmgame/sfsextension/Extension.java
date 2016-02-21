@@ -133,7 +133,7 @@ public class Extension extends AbstractExtension {
         Storage s = new Storage(v, ds, l, t);
 
         PlotList pl = new PlotList(ds, l, t);
-        Unlockable u = new Unlockable(ds, l, t);
+        Unlockable u = new Unlockable(ds);
         Reward rw = new Reward(ds, l, t);
         Achievement av = new Achievement(ds, l, t);
         IAnimalInventory al = new AnimalInventoryRaw(ds, t);

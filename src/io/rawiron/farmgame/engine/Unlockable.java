@@ -4,16 +4,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import io.rawiron.farmgame.gamesettings.DataGameSettings;
-import io.rawiron.farmgame.system.DataStore;
+import io.rawiron.farmgame.system.*;
 import io.rawiron.farmgame.gamesettings.DataUnlockable;
-import io.rawiron.farmgame.system.Logging;
-import io.rawiron.farmgame.system.Trace;
 
 
 public class Unlockable {
 
-    private Trace t;
-    private Logging l;
+    public static final Trace t = TraceFactory.create();
+    public static final Logging l = LoggingFactory.create();
     private DataStore ds;
 
     private Achievement achievement;
@@ -26,10 +24,8 @@ public class Unlockable {
     private DataGameSettings dataGameSettings;
 
 
-    public Unlockable(DataStore in_ds, Logging in_l, Trace in_t) {
+    public Unlockable(DataStore in_ds) {
         ds = in_ds;
-        l = in_l;
-        t = in_t;
     }
 
     public void setAchievement(Achievement in_av) {
@@ -79,7 +75,7 @@ public class Unlockable {
  * OUT
  */
     {
-        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 4)) t.trace("enter function =BuyUnlockable=");
+        t.trace("enter function =BuyUnlockable=");
         boolean success = false;
 
         int playerID = 0;
@@ -113,7 +109,7 @@ public class Unlockable {
             }
         }
 
-        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 4)) t.trace("exit function =BuyUnlockable=");
+        t.trace("exit function =BuyUnlockable=");
         return success;
     }
 
@@ -174,7 +170,7 @@ public class Unlockable {
  * unlockable.XPEarned
  */
     {
-        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 4)) t.trace("enter function =payForUnlock=");
+        t.trace("enter function =payForUnlock=");
         boolean result = false;
 
 
@@ -254,7 +250,7 @@ public class Unlockable {
             }
         }
 
-        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 4)) t.trace("exit function =payForUnlock= with result=" + result);
+        t.trace("exit function =payForUnlock= with result=" + result);
 
         return result;
     }

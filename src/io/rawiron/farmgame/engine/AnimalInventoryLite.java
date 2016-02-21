@@ -30,7 +30,10 @@ public class AnimalInventoryLite implements IAnimalInventory {
         return save(animal);
     }
 
-    public int  goldValue(String playerId) { return 0; }
+    public int goldValue(String playerId) {
+        final ResultSet result = retrieve(playerId);
+        return 0;
+    }
 
     private boolean save(AnimalItem animal) {
         AnimalItemLite a = new AnimalItemLite();

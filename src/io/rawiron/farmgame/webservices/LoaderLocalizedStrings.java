@@ -15,7 +15,7 @@ public class LoaderLocalizedStrings {
     private DataStore ds;
 
     public JSONObject getStringTable(String in_language) {
-        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 4)) Trace.trace("enter function =getStringTable= ");
+        Trace.trace("enter function =getStringTable= ");
 
         String db_sql_read_Localization = "SELECT `Key`,`" + in_language + "`,'" + in_language + "' AS Language FROM Localization";
         ResultSet db_res_localize = ds.query(db_sql_read_Localization, "read", null);
@@ -33,7 +33,7 @@ public class LoaderLocalizedStrings {
             e.printStackTrace();
         }
 
-        if (Trace.VERBOSE && (Trace.VERBOSE_LEVEL >= 4)) Trace.trace("exit function =getStringTable= ");
+        Trace.trace("exit function =getStringTable= ");
         return response;
     }
 }
