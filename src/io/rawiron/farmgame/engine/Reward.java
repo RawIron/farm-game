@@ -5,10 +5,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.rawiron.farmgame.system.DataStore;
+import io.rawiron.farmgame.system.*;
 import io.rawiron.farmgame.gamesettings.DataUnlockable;
-import io.rawiron.farmgame.system.Logging;
-import io.rawiron.farmgame.system.Trace;
+import org.joda.time.LocalDateTime;
 
 
 public class Reward {
@@ -53,19 +52,12 @@ public class Reward {
 
 
     /**
-     * ABSTRACT
      * trigger(rewardName as  ):
      *
-     * IN
-     * rewardName:String
-     * facebookuser:String
-     * farmID:int
-     * dbgroup:int
-     *
-     * PERFORMANCE_IMPACT
-     *	General:high
-     *	Frequency:stress
-     *	Cost:high
+     * @param rewardName:String
+     * @param facebookuser:String
+     * @param farmID:int
+     * @param dbgroup:int
      *
      */
     public int give(String rewardName, String in_facebookuser, int in_farmID)
@@ -108,22 +100,36 @@ public class Reward {
         }
 
 
-        if (l.log) {
-            if (item.coinsReward > 0) {
-                ds.execute("INSERT INTO `log` VALUES ( Now(), 'reward','" + in_facebookuser + "','" + in_farmID + "','" + rewardName + "'," + item.coinsReward + ", 'K',null,1 )", "log", null);
-            }
-            if (item.goldReward > 0) {
-                ds.execute("INSERT INTO `log` VALUES ( Now(), 'reward','" + in_facebookuser + "','" + in_farmID + "','" + rewardName + "'," + item.goldReward + ", 'G',null,1 )", "log", null);
-            }
+        if (item.coinsReward > 0) {
+            new RewardEvent(
+                    UtcDateTime.now(),
+                    in_facebookuser,
+                    in_farmID,
+                    rewardName,
+                    "coins",
+                    item.coinsReward
+            ).track();
+        }
+        if (item.goldReward > 0) {
+            new RewardEvent(
+                    UtcDateTime.now(),
+                    in_facebookuser,
+                    in_farmID,
+                    rewardName,
+                    "gold",
+                    item.goldReward
+            ).track();
         }
 
         if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace("exit function =giveReward=");
+
         return 1;
     }
 
 
     public List<RewardItem> retrieve() {
-        return getRewardItems("SELECT CoinsReward, GoldReward, XPReward, " +
+        return getRewardItems(
+                "SELECT CoinsReward, GoldReward, XPReward, " +
                 "StorageQuantity, StorageReward, UnlockableReward, GiftReward " +
                 "FROM RewardList ");
     }
