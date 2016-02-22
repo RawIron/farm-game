@@ -2,6 +2,8 @@ package io.rawiron.farmgame.engine;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.rawiron.farmgame.system.DataStore;
 import io.rawiron.farmgame.gamesettings.DataUnlockable;
@@ -50,91 +52,68 @@ public class Reward {
     }
 
 
+    /**
+     * ABSTRACT
+     * trigger(rewardName as  ):
+     *
+     * IN
+     * rewardName:String
+     * facebookuser:String
+     * farmID:int
+     * dbgroup:int
+     *
+     * PERFORMANCE_IMPACT
+     *	General:high
+     *	Frequency:stress
+     *	Cost:high
+     *
+     */
     public int give(String rewardName, String in_facebookuser, int in_farmID)
-/**
- * ABSTRACT
- * trigger(rewardName as  ):
- *
- * IN
- * rewardName:String
- * facebookuser:String
- * farmID:int
- * dbgroup:int
- *
- * PERFORMANCE_IMPACT
- *	General:high
- *	Frequency:stress
- *	Cost:high
- *
- */
     {
         if (t.VERBOSE && (t.VERBOSE_LEVEL >= 4)) t.trace("enter function =giveReward=   rewardName=" + rewardName + "");
 
-        // BUG .. OR Rl.ID=rewardName  .. JobList-Mastery uses RewardList.ID and NOT RewardList.RewardName
-        String db_sql_read_RewardList =
-                " SELECT Rl.CoinsReward, Rl.GoldReward, Rl.XPReward "
-                        + ", Rl.StorageQuantity, Rl.StorageReward, Rl.UnlockableReward, Rl.GiftReward "
+        // BUG .. OR ID=rewardName  .. JobList-Mastery uses RewardList.ID and NOT RewardList.RewardName
+        List<RewardItem> items = getRewardItems(
+                " SELECT CoinsReward, GoldReward, XPReward "
+                        + ", StorageQuantity, StorageReward, UnlockableReward, GiftReward "
                         + " FROM RewardList as Rl "
-                        + " WHERE Rl.RewardName=" + "'" + rewardName + "'"
-                        + " OR Rl.ID=" + "'" + rewardName + "'";
+                        + " WHERE RewardName=" + "'" + rewardName + "'"
+                        + " OR ID=" + "'" + rewardName + "'"
+                );
 
-
-        int reward_amount_coins = 0;
-        int reward_amount_gold = 0;
-        int reward_amount_xp = 0;
-        int storageQuantity = 0;
-        String storageReward = null;
-        String unlockableReward = null;
-        String giftReward = null;
-
-        ResultSet db_res_Reward = ds.query(db_sql_read_RewardList, "read", in_facebookuser);
-        try {
-            if (db_res_Reward.next()) {
-                reward_amount_coins = db_res_Reward.getInt("CoinsReward");
-                reward_amount_gold = db_res_Reward.getInt("GoldReward");
-                reward_amount_xp = db_res_Reward.getInt("XPReward");
-
-                storageQuantity = db_res_Reward.getInt("StorageQuantity");
-                storageReward = db_res_Reward.getString("StorageReward");
-                unlockableReward = db_res_Reward.getString("UnlockableReward");
-                giftReward = db_res_Reward.getString("GiftReward");
-            }
-        } catch (SQLException e) {
+        if (items.isEmpty()) {
+            return 0;
         }
+
+        RewardItem item = items.get(0);
+
         int unlockableID = 0;
-        unlockableID = dataUnlockable.cached.get(unlockableReward).id;
+        unlockableID = dataUnlockable.cached.get(item.unlockableReward).id;
 
 
-        //
-        // add(Vl)
-        valuable.add(in_facebookuser, in_farmID, reward_amount_coins, reward_amount_gold, 0, 0, 0);
-        valuable.levelUp(reward_amount_xp, in_facebookuser);
+        valuable.add(in_facebookuser, in_farmID, item.coinsReward, item.goldReward, 0, 0, 0);
+        valuable.levelUp(item.xpReward, in_facebookuser);
 
 
-        //
-        //
-        if ((storageQuantity > 0) && (storageReward != null)) {
-            // add(Pl)
-            storage.add(in_facebookuser, in_farmID, storageReward, storageQuantity);
+        if ((item.storageQuantity > 0) && (item.storageReward != null)) {
+            storage.add(in_facebookuser, in_farmID, item.storageReward, item.storageQuantity);
         }
 
-        if (unlockableReward != null) {
-            // add(Ul)
+        if (item.unlockableReward != null) {
             unlockable.add(in_facebookuser, unlockableID, 1);
         }
 
-        if (giftReward != null) {
-            // add(Gl)
-            gift.add(giftReward, "starterfarm", in_facebookuser);
+        if (item.giftReward != null) {
+            gift.add(item.giftReward, "starterfarm", in_facebookuser);
         }
 
 
         if (l.log) {
-            if (reward_amount_coins > 0) {
-                ds.execute("INSERT INTO `log` VALUES ( Now(), 'reward','" + in_facebookuser + "','" + in_farmID + "','" + rewardName + "'," + reward_amount_coins + ", 'K',null,1 )", "log", null);
+            if (item.coinsReward > 0) {
+                ds.execute("INSERT INTO `log` VALUES ( Now(), 'reward','" + in_facebookuser + "','" + in_farmID + "','" + rewardName + "'," + item.coinsReward + ", 'K',null,1 )", "log", null);
             }
-            if (reward_amount_gold > 0) {
-                ds.execute("INSERT INTO `log` VALUES ( Now(), 'reward','" + in_facebookuser + "','" + in_farmID + "','" + rewardName + "'," + reward_amount_gold + ", 'G',null,1 )", "log", null);
+            if (item.goldReward > 0) {
+                ds.execute("INSERT INTO `log` VALUES ( Now(), 'reward','" + in_facebookuser + "','" + in_farmID + "','" + rewardName + "'," + item.goldReward + ", 'G',null,1 )", "log", null);
             }
         }
 
@@ -143,9 +122,35 @@ public class Reward {
     }
 
 
-    public ResultSet retrieve() {
-        String sql = "SELECT * FROM RewardList ";
-        return ds.query(sql, "read", null);
+    public List<RewardItem> retrieve() {
+        return getRewardItems("SELECT CoinsReward, GoldReward, XPReward, " +
+                "StorageQuantity, StorageReward, UnlockableReward, GiftReward " +
+                "FROM RewardList ");
+    }
+
+    private List<RewardItem> getRewardItems(String sql) {
+        List<RewardItem> result = new ArrayList<RewardItem>();
+
+        try {
+            ResultSet rs = ds.query(sql, "read", null);
+            while (rs.next()) {
+                RewardItem item = new RewardItem();
+
+                item.coinsReward = rs.getInt("CoinsReward");
+                item.goldReward = rs.getInt("GoldReward");
+                item.xpReward = rs.getInt("XPReward");
+                item.storageQuantity = rs.getInt("StorageQuantity");
+                item.storageReward = rs.getString("StorageReward");
+                item.unlockableReward = rs.getString("UnlockableReward");
+                item.giftReward = rs.getString("GiftReward");
+
+                result.add(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
 }
